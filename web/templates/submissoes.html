@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Titulo }}</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="site-header">
+    <div class="container header-wrapper">
+      <a href="/" class="brand-group">
+        <div class="brand-logo-icon">B</div>
+        <div class="brand-info">
+          <h1>BiblioTânia</h1>
+          <p>Biblioteca Digital · Colégio Betânia</p>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="/" class="nav-link">Catálogo</a>
+        <a href="/submeter" class="nav-link nav-btn-highlight">Sugerir / Enviar Livro</a>
+        <a href="/submissoes" class="nav-link">Mural da IA</a>
+        <a href="/sobre" class="nav-link">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:2rem; padding-bottom:4rem;">
+    <div style="text-align:center; max-width:700px; margin:0 auto 2.5rem auto;">
+      <h2 style="font-size:1.9rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem;">
+        Mural de Triagem da Inteligência Artificial
+      </h2>
+      <p style="font-size:0.95rem; color:var(--text-muted);">
+        Acompanhe a avaliação automática das sugestões dos estudantes. O Curador de IA do Colégio Betânia analisa cada livro submetido antes de publicar no acervo aberto.
+      </p>
+    </div>
+
+    {{ if .Mensagem }}
+      <div class="alert-box alert-success" style="max-width:800px; margin:0 auto 2rem auto;">
+        {{ .Mensagem }}
+      </div>
+    {{ end }}
+
+    <div style="max-width:860px; margin:0 auto;">
+      {{ if .Submissoes }}
+        {{ range .Submissoes }}
+        <div class="submission-card">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:0.75rem;">
+            <div>
+              <span class="status-pill status-{{ .Status }}">{{ .Status }}</span>
+              <h3 style="font-size:1.15rem; font-weight:700; color:#0f172a; margin-top:0.35rem;">
+                {{ .Titulo }}
+              </h3>
+              <p style="font-size:0.85rem; color:var(--text-muted);">
+                Sugerido por <strong>{{ .EstudanteNome }}</strong> ({{ .EstudanteClasse }})
+              </p>
+            </div>
+            <span style="font-size:0.78rem; color:#94a3b8;">
+              {{ .CriadoEm.Format "02/01/2006 15:04" }}
+            </span>
+          </div>
+
+          {{ if .AIParecer }}
+          <div style="background:#f8fafc; border-left:3px solid var(--primary); padding:0.85rem 1rem; border-radius:0 8px 8px 0; margin-top:0.75rem;">
+            <div style="font-size:0.78rem; font-weight:700; color:var(--primary); text-transform:uppercase; margin-bottom:0.25rem;">
+              🤖 Parecer Pedagógico da IA
+            </div>
+            <p style="font-size:0.88rem; color:#334155; margin:0; line-height:1.5;">
+              {{ .AIParecer }}
+            </p>
+          </div>
+          {{ else }}
+          <p style="font-size:0.85rem; color:#b45309; font-style:italic; margin-top:0.5rem;">
+            ⏳ Em fila de processamento pelo motor de IA do Colégio Betânia...
+          </p>
+          {{ end }}
+        </div>
+        {{ end }}
+      {{ else }}
+        <div style="text-align:center; padding:3rem; background:white; border-radius:12px; border:1px solid var(--border);">
+          <p style="color:var(--text-muted); font-size:1rem;">Nenhuma submissão registrada até o momento.</p>
+          <a href="/submeter" class="btn-read" style="display:inline-block; margin-top:1rem;">Seja o primeiro a enviar um livro</a>
+        </div>
+      {{ end }}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 <strong>Colégio Betânia</strong> · BiblioTânia</p>
+    </div>
+  </footer>
+
+</body>
+</html>

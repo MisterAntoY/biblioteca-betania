@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Titulo }}</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="site-header">
+    <div class="container header-wrapper">
+      <a href="/" class="brand-group">
+        <div class="brand-logo-icon">B</div>
+        <div class="brand-info">
+          <h1>BiblioTânia</h1>
+          <p>Biblioteca Digital · Colégio Betânia</p>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="/" class="nav-link">Catálogo</a>
+        <a href="/submeter" class="nav-link nav-btn-highlight">Sugerir / Enviar Livro</a>
+        <a href="/submissoes" class="nav-link">Mural da IA</a>
+        <a href="/sobre" class="nav-link">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="max-width:820px; padding-top:2.5rem; padding-bottom:4rem;">
+    <article style="background:white; border:1px solid var(--border); border-radius:12px; padding:2.5rem; box-shadow:var(--shadow-sm);">
+      <h2 style="font-size:2rem; font-weight:800; color:#0f172a; margin-bottom:1rem;">
+        Sobre a BiblioTânia
+      </h2>
+      <p style="font-size:1.05rem; line-height:1.7; color:#334155; margin-bottom:1.5rem;">
+        A <strong>BiblioTânia</strong> é a plataforma oficial de biblioteca digital do <strong>Colégio Betânia</strong>. Projetada sob o princípio da máxima simplicidade, alta velocidade e zero dependências pesadas, seu objetivo é democratizar o acesso ao conhecimento pedagógico de excelência para todos os alunos e docentes da instituição.
+      </p>
+
+      <h3 style="font-size:1.3rem; font-weight:700; color:#0f172a; margin-top:2rem; margin-bottom:0.75rem;">
+        Principais Pilares do Projeto
+      </h3>
+      <ul style="padding-left:1.5rem; color:#475569; line-height:1.8; margin-bottom:1.5rem;">
+        <li><strong>Arquitetura de Baixo Consumo em Go:</strong> Substitui servidores pesados e lentos por um único binário nativo compilado, consumindo menos de 20MB de memória RAM.</li>
+        <li><strong>Busca de Alta Performance (SQLite FTS5):</strong> Indexação textual instantânea para suportar catálogos que escalam rumo a milhões de títulos com resposta em milissegundos.</li>
+        <li><strong>Curadoria Colaborativa com Inteligência Artificial:</strong> Os estudantes enviam livros em PDF, DOCX ou links abertos, e a IA do colégio avalia a adequação didática, moral e curricular antes da inclusão automática.</li>
+        <li><strong>Segurança Absoluta:</strong> Imunidade nativa contra SQL Injection (consultas parametrizadas rígidas) e XSS (auto-escaping contextual nos templates).</li>
+      </ul>
+
+      <h3 style="font-size:1.3rem; font-weight:700; color:#0f172a; margin-top:2rem; margin-bottom:0.75rem;">
+        Orientação Pedagógica
+      </h3>
+      <p style="font-size:0.95rem; line-height:1.7; color:#475569;">
+        O acervo contempla obras de Domínio Público, Recursos Educacionais Abertos (REA) e manuais de apoio escolar alinhados aos programas curriculares do Ensino Primário e Secundário em Angola.
+      </p>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 <strong>Colégio Betânia</strong> · BiblioTânia</p>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,20 @@
+# Binários
+bin/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Dados e Uploads Locais
+data/*.db
+data/*.db-wal
+data/*.db-shm
+uploads/*
+!uploads/.gitkeep
+
+# Ambientes e Logs
+.env
+*.log
+*.tmp
+test_uploads/

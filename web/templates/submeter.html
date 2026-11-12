@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Titulo }}</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header class="site-header">
+    <div class="container header-wrapper">
+      <a href="/" class="brand-group">
+        <div class="brand-logo-icon">B</div>
+        <div class="brand-info">
+          <h1>BiblioTânia</h1>
+          <p>Biblioteca Digital · Colégio Betânia</p>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="/" class="nav-link">Catálogo</a>
+        <a href="/submeter" class="nav-link nav-btn-highlight">Sugerir / Enviar Livro</a>
+        <a href="/submissoes" class="nav-link">Mural da IA</a>
+        <a href="/sobre" class="nav-link">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="form-card">
+      <h2 style="font-size:1.6rem; font-weight:800; color:#0f172a; margin-bottom:0.5rem; text-align:center;">
+        Contribua com a BiblioTânia
+      </h2>
+      <p style="font-size:0.92rem; color:var(--text-muted); text-align:center; margin-bottom:2rem;">
+        Envie um livro digital, manual de estudos ou artigo educativo. A Inteligência Artificial do Colégio Betânia avaliará o conteúdo e fará a inclusão automática no acervo oficial.
+      </p>
+
+      {{ if .Mensagem }}
+        <div class="alert-box {{ if .TipoErro }}alert-error{{ else }}alert-success{{ end }}">
+          {{ .Mensagem }}
+        </div>
+      {{ end }}
+
+      <form action="/api/submissoes" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+          <label class="form-label" for="estudante_nome">Seu Nome Completo *</label>
+          <input type="text" id="estudante_nome" name="estudante_nome" required class="form-control" placeholder="Ex: Tânia Mendes">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="estudante_classe">Sua Classe / Turma *</label>
+          <input type="text" id="estudante_classe" name="estudante_classe" required class="form-control" placeholder="Ex: 10ª Classe B - Ciências Físicas e Biológicas">
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+          <div class="form-group">
+            <label class="form-label" for="disciplina_id">Disciplina Relacionada</label>
+            <select id="disciplina_id" name="disciplina_id" class="form-control">
+              <option value="0">Selecione a Disciplina</option>
+              {{ range .Disciplinas }}
+              <option value="{{ .ID }}">{{ .Icone }} {{ .Nome }}</option>
+              {{ end }}
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="nivel_id">Nível / Ciclo Escolar</label>
+            <select id="nivel_id" name="nivel_id" class="form-control">
+              <option value="0">Selecione o Ciclo</option>
+              {{ range .Niveis }}
+              <option value="{{ .ID }}">{{ .Nome }}</option>
+              {{ end }}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="titulo">Título da Obra / Manual *</label>
+          <input type="text" id="titulo" name="titulo" required class="form-control" placeholder="Ex: Manual de Biologia 10ª Classe ou Dom Casmurro">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="autor">Autor ou Instituição (opcional)</label>
+          <input type="text" id="autor" name="autor" class="form-control" placeholder="Ex: Ministério da Educação, Machado de Assis, etc.">
+        </div>
+
+        <!-- Seleção do Tipo de Envio -->
+        <div class="form-group">
+          <label class="form-label">Como deseja enviar o livro?</label>
+          <div style="display:flex; gap:1.5rem; margin-top:0.4rem;">
+            <label style="font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+              <input type="radio" name="tipo_envio" value="arquivo" checked>
+              📁 Enviar Arquivo (PDF ou DOCX)
+            </label>
+            <label style="font-weight:600; font-size:0.92rem; display:flex; align-items:center; gap:0.4rem; cursor:pointer;">
+              <input type="radio" name="tipo_envio" value="link">
+              🔗 Link Externo (URL Pública)
+            </label>
+          </div>
+        </div>
+
+        <div id="grupo-arquivo" class="form-group">
+          <label class="form-label" for="arquivo">Selecionar Arquivo (PDF / DOCX até 50MB) *</label>
+          <input type="file" id="arquivo" name="arquivo" accept=".pdf,.docx,.doc" class="form-control">
+        </div>
+
+        <div id="grupo-link" class="form-group" style="display:none;">
+          <label class="form-label" for="link_url">Endereço Web do Livro (HTTPS) *</label>
+          <input type="url" id="link_url" name="link_url" class="form-control" placeholder="https://exemplo.org/livro.pdf">
+        </div>
+
+        <div style="margin-top:2rem;">
+          <button type="submit" class="search-btn" style="width:100%; padding:0.9rem; font-size:1.05rem;">
+            🚀 Submeter para Avaliação da IA
+          </button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 <strong>Colégio Betânia</strong> · BiblioTânia</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

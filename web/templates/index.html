@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ .Titulo }}</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- Cabeçalho Institucional -->
+  <header class="site-header">
+    <div class="container header-wrapper">
+      <a href="/" class="brand-group">
+        <div class="brand-logo-icon">B</div>
+        <div class="brand-info">
+          <h1>BiblioTânia</h1>
+          <p>Biblioteca Digital · Colégio Betânia</p>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="/" class="nav-link">Catálogo</a>
+        <a href="/submeter" class="nav-link nav-btn-highlight">Sugerir / Enviar Livro</a>
+        <a href="/submissoes" class="nav-link">Mural da IA</a>
+        <a href="/sobre" class="nav-link">Sobre</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Hero & Pesquisa Instantânea -->
+    <section class="hero-section">
+      <h2 class="hero-title">Acervo Aberto do Colégio Betânia</h2>
+      <p class="hero-subtitle">
+        Uma biblioteca digital ultraleve construída para expandir os horizontes escolares. Manuais didáticos, literatura clássica, ciências e apoio curricular para estudantes e professores.
+      </p>
+
+      <form action="/" method="GET" class="search-box-card">
+        <input type="text" name="q" value="{{ .Query }}" placeholder="Pesquise por título, autor, disciplina ou palavra-chave..." class="search-input" autofocus>
+        {{ if .DisciplinaID }}<input type="hidden" name="disciplina" value="{{ .DisciplinaID }}">{{ end }}
+        {{ if .NivelID }}<input type="hidden" name="nivel" value="{{ .NivelID }}">{{ end }}
+        <button type="submit" class="search-btn">Pesquisar</button>
+      </form>
+    </section>
+
+    <!-- Pílulas de Matérias Escolares -->
+    <div class="disciplines-pills-bar">
+      <a href="/{{ if .Query }}?q={{ .Query }}{{ end }}" class="pill-item {{ if eq .DisciplinaID 0 }}active{{ end }}">
+        🌟 Todas as Disciplinas
+      </a>
+      {{ range .Disciplinas }}
+      <a href="/?disciplina={{ .ID }}{{ if $.Query }}&q={{ $.Query }}{{ end }}" class="pill-item {{ if eq $.DisciplinaID .ID }}active{{ end }}">
+        {{ .Icone }} {{ .Nome }}
+      </a>
+      {{ end }}
+    </div>
+
+    <!-- Cabeçalho do Catálogo -->
+    <div class="catalog-header">
+      <span class="catalog-count">{{ .TotalLivros }} obras disponíveis no acervo</span>
+      <div>
+        <form action="/" method="GET" style="display:inline-flex; align-items:center; gap:0.5rem;">
+          {{ if .Query }}<input type="hidden" name="q" value="{{ .Query }}">{{ end }}
+          {{ if .DisciplinaID }}<input type="hidden" name="disciplina" value="{{ .DisciplinaID }}">{{ end }}
+          <label for="filtro-nivel" style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Nível:</label>
+          <select id="filtro-nivel" name="nivel" onchange="this.form.submit()" style="padding:0.35rem 0.65rem; border-radius:6px; border:1px solid var(--border); font-size:0.85rem;">
+            <option value="0">Todos os Ciclos</option>
+            {{ range .Niveis }}
+            <option value="{{ .ID }}" {{ if eq $.NivelID .ID }}selected{{ end }}>{{ .Nome }}</option>
+            {{ end }}
+          </select>
+        </form>
+      </div>
+    </div>
+
+    <!-- Grid de Livros -->
+    {{ if .Livros }}
+    <div class="books-grid">
+      {{ range .Livros }}
+      <article class="book-card">
+        <div>
+          <div class="book-badge-row">
+            {{ if .DisciplinaNome }}<span class="badge-discipline">{{ .DisciplinaNome }}</span>{{ end }}
+            {{ if .NivelNome }}<span class="badge-level">{{ .NivelNome }}</span>{{ end }}
+          </div>
+          <h3 class="book-title">{{ .Titulo }}</h3>
+          <p class="book-author">{{ .Autor }} {{ if .AnoPublicacao }}({{ .AnoPublicacao }}){{ end }}</p>
+          <p class="book-synopsis">{{ .Sinopse }}</p>
+        </div>
+
+        <div class="book-footer-actions">
+          <a href="/ler/{{ .ID }}" target="_blank" rel="noopener noreferrer" class="btn-read">
+            📖 Ler Obra
+          </a>
+          <span class="book-metrics">{{ .Visualizacoes }} leituras</span>
+        </div>
+      </article>
+      {{ end }}
+    </div>
+
+    <!-- Navegação de Páginas -->
+    {{ if gt .TotalPaginas 1 }}
+    <nav class="pagination-nav">
+      {{ if gt .Pagina 1 }}
+      <a href="/?p={{ sub .Pagina 1 }}{{ if .Query }}&q={{ .Query }}{{ end }}{{ if .DisciplinaID }}&disciplina={{ .DisciplinaID }}{{ end }}">&larr; Anterior</a>
+      {{ end }}
+      <span style="display:inline-flex; align-items:center; padding:0 0.75rem; font-weight:600; font-size:0.85rem; color:var(--text-muted);">
+        Página {{ .Pagina }} de {{ .TotalPaginas }}
+      </span>
+      {{ if lt .Pagina .TotalPaginas }}
+      <a href="/?p={{ add .Pagina 1 }}{{ if .Query }}&q={{ .Query }}{{ end }}{{ if .DisciplinaID }}&disciplina={{ .DisciplinaID }}{{ end }}">Próxima &rarr;</a>
+      {{ end }}
+    </nav>
+    {{ end }}
+
+    {{ else }}
+    <div style="text-align:center; padding:4rem 1rem; background:white; border-radius:12px; border:1px solid var(--border); margin-bottom:3rem;">
+      <p style="font-size:1.1rem; color:var(--text-muted); margin-bottom:1rem;">Nenhum livro encontrado com os filtros selecionados.</p>
+      <a href="/" class="btn-read" style="display:inline-block;">Ver todo o acervo</a>
+    </div>
+    {{ end }}
+
+    <!-- Painel de Métricas & Jornada de Escala (100 Milhões) -->
+    {{ if .Stats }}
+    <section class="stats-banner">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <h3>{{ .Stats.TotalLivros }}</h3>
+          <p>Obras Indexadas</p>
+        </div>
+        <div class="stat-item">
+          <h3>100M</h3>
+          <p>Meta de Escala</p>
+        </div>
+        <div class="stat-item">
+          <h3>{{ .Stats.TotalSubmissoes }}</h3>
+          <p>Contribuições de Alunos</p>
+        </div>
+        <div class="stat-item">
+          <h3>{{ .Stats.TotalAprovadosIA }}</h3>
+          <p>Aprovados pela IA</p>
+        </div>
+      </div>
+    </section>
+    {{ end }}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="/">Início</a>
+        <a href="/submeter">Enviar Material Didático</a>
+        <a href="/submissoes">Mural de Avaliações IA</a>
+        <a href="/sobre">Sobre o Projeto</a>
+      </div>
+      <p>© 2026 <strong>Colégio Betânia</strong> · BiblioTânia — Plataforma Educacional Aberta de Alto Desempenho</p>
+      <p style="font-size:0.78rem; color:#94a3b8; margin-top:0.35rem;">Tecnologia Go de Baixo Consumo · Zero Rastreadores · Código Aberto e Didático</p>
+    </div>
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
