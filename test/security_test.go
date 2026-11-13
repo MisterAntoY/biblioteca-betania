@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"fmt"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -159,8 +160,8 @@ func TestConcurrencyAndRaceConditions(t *testing.T) {
 			} else {
 				// Escritas concorrentes
 				_, err := db.InserirLivro(&models.Livro{
-					Titulo:  "Obra Concorrente",
-					Autor:   "Autor Teste",
+					Titulo:  fmt.Sprintf("Obra Concorrente #%d", workerID),
+					Autor:   fmt.Sprintf("Autor Teste #%d", workerID),
 					Status:  "ativo",
 					Sinopse: "Livro adicionado concorrentemente para teste de race condition.",
 				})
@@ -245,9 +246,9 @@ func TestCatalogSearchAndPagination(t *testing.T) {
 	db, cleanup := setupTestDB(t)
 	defer cleanup()
 
-	// Busca por palavra-chave existente no seed
+	// Busca por palavra-chave existente no cânone angolano
 	livros, total, err := db.ListarLivros(database.FiltrosBusca{
-		Query:  "Casmurro",
+		Query:  "Mayombe",
 		Pagina: 1,
 		Limite: 10,
 	})
@@ -255,9 +256,9 @@ func TestCatalogSearchAndPagination(t *testing.T) {
 		t.Fatalf("falha na busca FTS5: %v", err)
 	}
 	if total == 0 || len(livros) == 0 {
-		t.Fatalf("esperava encontrar Dom Casmurro na busca por 'Casmurro'")
+		t.Fatalf("esperava encontrar Mayombe na busca por 'Mayombe'")
 	}
-	if !strings.Contains(livros[0].Titulo, "Dom Casmurro") {
+	if !strings.Contains(livros[0].Titulo, "Mayombe") {
 		t.Fatalf("livro incorreto retornado: %s", livros[0].Titulo)
 	}
 }

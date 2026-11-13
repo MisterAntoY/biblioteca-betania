@@ -49,6 +49,7 @@ CREATE INDEX IF NOT EXISTS idx_livros_status_id ON livros(status, id DESC);
 CREATE INDEX IF NOT EXISTS idx_livros_disciplina ON livros(disciplina_id, status);
 CREATE INDEX IF NOT EXISTS idx_livros_nivel ON livros(nivel_id, status);
 CREATE INDEX IF NOT EXISTS idx_livros_criado_em ON livros(criado_em DESC);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_livros_titulo_autor ON livros(titulo, autor);
 
 -- 4. Tabela Virtual FTS5 para Busca Textual Instantânea
 CREATE VIRTUAL TABLE IF NOT EXISTS livros_fts USING fts5(
