@@ -48,7 +48,7 @@ func TestVisualizationFullE2E(t *testing.T) {
 	h.HandleIndex(wHome, reqHome)
 
 	if wHome.Code != 200 {
-		t.Fatalf("esperava status 200 na home, recebido: %d", wHome.Code)
+		t.Fatalf("esperava status 200 na home, recebido: %d. Body: %s", wHome.Code, wHome.Body.String())
 	}
 	bodyHome := wHome.Body.String()
 
@@ -212,4 +212,40 @@ func TestVisualizationFullE2E(t *testing.T) {
 		t.Fatalf("redirecionamento de Mayombe deveria apontar para o acervo oficial da UEA, recebido: %s", loc)
 	}
 	t.Logf("✓ Redirecionamento seguro de leitura validado para: %s", loc)
+
+	// 9. Testar Seletor Rápido de Classes Escolares e Filtragem Curricular (1ª à 12ª Classe)
+	if !strings.Contains(bodyHome, "class-selector-card") {
+		t.Fatalf("seletor visual de classes escolares não encontrado na Home")
+	}
+	if !strings.Contains(bodyHome, "Selecione a sua Classe Escolar") {
+		t.Fatalf("título do seletor de classes escolares ausente na Home")
+	}
+
+	// Validar que TODAS as classes de 1ª a 12ª possuem manuais oficiais no banco e filtram perfeitamente
+	for c := 1; c <= 12; c++ {
+		reqClasse := httptest.NewRequest("GET", fmt.Sprintf("/?classe=%d", c), nil)
+		wClasse := httptest.NewRecorder()
+		h.HandleIndex(wClasse, reqClasse)
+
+		if wClasse.Code != 200 {
+			t.Fatalf("esperava status 200 ao filtrar classe %d, recebido: %d", c, wClasse.Code)
+		}
+		bodyClasse := wClasse.Body.String()
+		badgeEsperado := fmt.Sprintf("🎒 %dª Classe", c)
+		if !strings.Contains(bodyClasse, badgeEsperado) {
+			t.Fatalf("badge visual de classe '%s' não encontrado ao acessar /?classe=%d", badgeEsperado, c)
+		}
+		if !strings.Contains(bodyClasse, "📘 Manual Oficial") {
+			t.Fatalf("badge '📘 Manual Oficial' não encontrado na visualização da %dª classe", c)
+		}
+
+		livrosClasse, totalClasse, err := db.ListarLivros(database.FiltrosBusca{Classe: c})
+		if err != nil {
+			t.Fatalf("erro ao consultar livros da %dª classe: %v", c, err)
+		}
+		if totalClasse == 0 || len(livrosClasse) == 0 {
+			t.Fatalf("a %dª classe deve possuir manuais escolares no acervo, encontrados 0", c)
+		}
+		t.Logf("✓ Classe %dª validada: %d obras oficiais catalogadas com sucesso", c, totalClasse)
+	}
 }

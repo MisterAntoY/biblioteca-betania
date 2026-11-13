@@ -17,6 +17,8 @@ type IndexPageData struct {
 	Query        string
 	DisciplinaID int64
 	NivelID      int64
+	Classe       int
+	TipoMaterial string
 	Pagina       int
 	TotalPaginas int
 	TotalLivros  int64
@@ -36,6 +38,8 @@ func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 	query := strings.TrimSpace(r.URL.Query().Get("q"))
 	discID, _ := strconv.ParseInt(r.URL.Query().Get("disciplina"), 10, 64)
 	nivID, _ := strconv.ParseInt(r.URL.Query().Get("nivel"), 10, 64)
+	classe, _ := strconv.Atoi(r.URL.Query().Get("classe"))
+	tipoMaterial := strings.TrimSpace(r.URL.Query().Get("tipo"))
 	pag, _ := strconv.Atoi(r.URL.Query().Get("p"))
 	if pag < 1 {
 		pag = 1
@@ -45,6 +49,8 @@ func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 		Query:        query,
 		DisciplinaID: discID,
 		NivelID:      nivID,
+		Classe:       classe,
+		TipoMaterial: tipoMaterial,
 		Pagina:       pag,
 		Limite:       24,
 	}
@@ -69,6 +75,8 @@ func (h *Handler) HandleIndex(w http.ResponseWriter, r *http.Request) {
 		Query:        query,
 		DisciplinaID: discID,
 		NivelID:      nivID,
+		Classe:       classe,
+		TipoMaterial: tipoMaterial,
 		Pagina:       pag,
 		TotalPaginas: totalPaginas,
 		TotalLivros:  total,

@@ -65,8 +65,17 @@ func (db *DB) migrate() error {
 	db.mu.Lock()
 	defer db.mu.Unlock()
 
-	_, err := db.SqlDB.Exec(schemaSQL)
-	return err
+	if _, err := db.SqlDB.Exec(schemaSQL); err != nil {
+		return err
+	}
+
+	// Migrações incrementais idempotentes
+	_, _ = db.SqlDB.Exec("ALTER TABLE livros ADD COLUMN classe INTEGER DEFAULT 0")
+	_, _ = db.SqlDB.Exec("ALTER TABLE livros ADD COLUMN tipo_material TEXT NOT NULL DEFAULT 'manual_oficial'")
+	_, _ = db.SqlDB.Exec("CREATE INDEX IF NOT EXISTS idx_livros_classe ON livros(classe, status)")
+	_, _ = db.SqlDB.Exec("CREATE INDEX IF NOT EXISTS idx_livros_tipo_material ON livros(tipo_material, status)")
+
+	return nil
 }
 
 // -------------------------------------------------------------
@@ -125,6 +134,8 @@ type FiltrosBusca struct {
 	Query        string
 	DisciplinaID int64
 	NivelID      int64
+	Classe       int
+	TipoMaterial string
 	Pagina       int
 	Limite       int
 }
@@ -153,6 +164,14 @@ func (db *DB) ListarLivros(f FiltrosBusca) ([]models.Livro, int64, error) {
 	if f.NivelID > 0 {
 		condicoes = append(condicoes, "l.nivel_id = ?")
 		args = append(args, f.NivelID)
+	}
+	if f.Classe > 0 {
+		condicoes = append(condicoes, "l.classe = ?")
+		args = append(args, f.Classe)
+	}
+	if f.TipoMaterial != "" {
+		condicoes = append(condicoes, "l.tipo_material = ?")
+		args = append(args, f.TipoMaterial)
 	}
 
 	whereFTS := ""
@@ -185,6 +204,7 @@ func (db *DB) ListarLivros(f FiltrosBusca) ([]models.Livro, int64, error) {
 		SELECT 
 			l.id, l.titulo, l.autor, l.disciplina_id, COALESCE(d.nome, ''),
 			l.nivel_id, COALESCE(n.nome, ''), l.sinopse, l.ano_publicacao,
+			COALESCE(l.classe, 0), COALESCE(l.tipo_material, 'manual_oficial'),
 			l.formato, COALESCE(l.arquivo_url, ''), COALESCE(l.link_externo, ''),
 			l.tamanho_bytes, l.status, l.submetido_por, l.visualizacoes, l.downloads, l.criado_em
 		FROM livros l
@@ -210,6 +230,7 @@ func (db *DB) ListarLivros(f FiltrosBusca) ([]models.Livro, int64, error) {
 		if err := rows.Scan(
 			&l.ID, &l.Titulo, &l.Autor, &discID, &l.DisciplinaNome,
 			&nivID, &l.NivelNome, &l.Sinopse, &l.AnoPublicacao,
+			&l.Classe, &l.TipoMaterial,
 			&l.Formato, &l.ArquivoURL, &l.LinkExterno,
 			&l.TamanhoBytes, &l.Status, &l.SubmetidoPor, &l.Visualizacoes, &l.Downloads, &l.CriadoEm,
 		); err != nil {
@@ -235,6 +256,7 @@ func (db *DB) ObterLivroPorID(id int64) (*models.Livro, error) {
 		SELECT 
 			l.id, l.titulo, l.autor, l.disciplina_id, COALESCE(d.nome, ''),
 			l.nivel_id, COALESCE(n.nome, ''), l.sinopse, l.ano_publicacao,
+			COALESCE(l.classe, 0), COALESCE(l.tipo_material, 'manual_oficial'),
 			l.formato, COALESCE(l.arquivo_url, ''), COALESCE(l.link_externo, ''),
 			l.tamanho_bytes, l.status, l.submetido_por, l.visualizacoes, l.downloads, l.criado_em
 		FROM livros l
@@ -247,6 +269,7 @@ func (db *DB) ObterLivroPorID(id int64) (*models.Livro, error) {
 	err := db.SqlDB.QueryRow(query, id).Scan(
 		&l.ID, &l.Titulo, &l.Autor, &discID, &l.DisciplinaNome,
 		&nivID, &l.NivelNome, &l.Sinopse, &l.AnoPublicacao,
+		&l.Classe, &l.TipoMaterial,
 		&l.Formato, &l.ArquivoURL, &l.LinkExterno,
 		&l.TamanhoBytes, &l.Status, &l.SubmetidoPor, &l.Visualizacoes, &l.Downloads, &l.CriadoEm,
 	)
@@ -292,15 +315,20 @@ func (db *DB) InserirLivro(l *models.Livro) (int64, error) {
 	if l.NivelID > 0 {
 		nivID = l.NivelID
 	}
+	if l.TipoMaterial == "" {
+		l.TipoMaterial = "manual_oficial"
+	}
 
 	query := `
 		INSERT INTO livros (
 			titulo, autor, disciplina_id, nivel_id, sinopse, ano_publicacao,
+			classe, tipo_material,
 			formato, arquivo_url, link_externo, tamanho_bytes, status, submetido_por
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	res, err := db.SqlDB.Exec(query,
 		l.Titulo, l.Autor, discID, nivID, l.Sinopse, l.AnoPublicacao,
+		l.Classe, l.TipoMaterial,
 		l.Formato, l.ArquivoURL, l.LinkExterno, l.TamanhoBytes, l.Status, l.SubmetidoPor,
 	)
 	if err != nil {

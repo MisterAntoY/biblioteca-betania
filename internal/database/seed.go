@@ -3,6 +3,7 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 // SeedInitialData popula as disciplinas, ciclos e o acervo curricular completo de Angola no Colégio Betânia
@@ -107,6 +108,205 @@ func (db *DB) SeedInitialData() error {
 			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/1-classe-matematica",
 			"Currículo Oficial MED Angola",
 		},
+		{
+			"Manual de Iniciação ao Estudo do Meio — 1ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"estudo-meio",
+			"primario",
+			"A família, a escola, o corpo humano, os hábitos saudáveis e o meio ambiente local em Angola para crianças da 1ª classe.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/1-classe-estudo-do-meio",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Língua Portuguesa — 2ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"portugues-literatura",
+			"primario",
+			"Consolidação da leitura, escrita cursiva, formação de frases, pequenos textos ilustrados, rimas e contos angolanos para a infância.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/2-classe-lingua-portuguesa",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Matemática — 2ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"matematica",
+			"primario",
+			"Operações de adição e subtração com transporte até 500, noções de multiplicação, medidas de tempo e geometria básica.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/2-classe-matematica",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Estudo do Meio — 3ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"estudo-meio",
+			"primario",
+			"Os animais e plantas da região, o clima de Angola, os serviços comunitários, os meios de transporte e a preservação ambiental.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/3-classe-estudo-do-meio",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Língua Portuguesa — 4ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"portugues-literatura",
+			"primario",
+			"Leitura compreensiva, estrutura frásica, tipos de frases, adjetivos, tempos verbais do indicativo e redação de cartas e pequenas estórias.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/4-classe-lingua-portuguesa",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Matemática — 4ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"matematica",
+			"primario",
+			"Multiplicação e divisão por dois dígitos, números até 10.000, introdução a frações simples, perímetro, áreas quadriculadas e dinheiro nacional.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/4-classe-matematica",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Educação Moral e Cívica — 4ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"filosofia",
+			"primario",
+			"Valores de respeito mútuo, convivência pacífica, solidariedade comunitária, amor à pátria angolana e direitos e deveres da criança.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/4-classe-moral-e-civica",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Língua Portuguesa — 5ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"portugues-literatura",
+			"primario",
+			"Desenvolvimento textual aprofundado, classes de palavras, sujeito e predicado, discurso direto e indireto e literatura infanto-juvenil angolana.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/5-classe-lingua-portuguesa",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Matemática — 5ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"matematica",
+			"primario",
+			"Frações equivalentes, números decimais, potenciação simples, medidas de massa e volume, ângulos, triângulos e resolução de problemas aritméticos.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/5-classe-matematica",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Educação Moral e Cívica — 5ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"filosofia",
+			"primario",
+			"Cidadania e justiça social, os direitos humanos, respeito pela diversidade cultural e étnica de Angola e responsabilidade ecológica.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/5-classe-moral-e-civica",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Ciências da Natureza — 6ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"biologia",
+			"primario",
+			"Reprodução das plantas e animais, cadeias alimentares, ecologia dos biomas angolanos (floresta do Maiombe, savanas, deserto do Namibe) e saúde ambiental.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/6-classe-ciencias-da-natureza",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de História de Angola e África — 6ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"historia",
+			"primario",
+			"Os reinos pré-coloniais (Congo, Ndongo, Matamba, Bailundo), a Rainha Njinga Mbandi, a resistência contra a penetração colonial e a identidade nacional.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/6-classe-historia",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Geografia de Angola — 6ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"geografia",
+			"primario",
+			"Recursos minerais (petróleo, diamantes, ferro), agricultura e pecuária angolanas, rede de transportes e comunicações nacionais.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/6-classe-geografia",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Língua Inglesa — 7ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"ingles-frances",
+			"primeiro-ciclo",
+			"Iniciação formal à língua inglesa: saudações, vocabulário do dia-a-dia, presente simples, pronomes pessoais e possessivos e diálogos para estudantes angolanos.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/7-classe-ingles",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Geografia de Angola e África — 8ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"geografia",
+			"primeiro-ciclo",
+			"O continente africano: relevo, grandes bacias hidrográficas (Congo, Nilo, Níger, Zambeze), zonas climáticas, vegetação e demografia africana.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/8-classe-geografia",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Língua Inglesa — 8ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"ingles-frances",
+			"primeiro-ciclo",
+			"Passado simples, presente contínuo, adjetivos comparativos e superlativos, leitura de textos narrativos e conversação guiada no contexto escolar.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/8-classe-ingles",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Geografia Económica Geral — 9ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"geografia",
+			"primeiro-ciclo",
+			"Geografia dos setores primário, secundário e terciário, comércio internacional, blocos regionais (SADC, União Africana) e desafios do desenvolvimento sustentável.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/9-classe-geografia",
+			"Currículo Oficial MED Angola",
+		},
+		{
+			"Manual de Língua Inglesa — 9ª Classe",
+			"Ministério da Educação de Angola (INIDE / MED)",
+			"ingles-frances",
+			"primeiro-ciclo",
+			"Tempos futuros, verbos modais (can, must, should), voz passiva básica, compreensão auditiva e preparação para os exames nacionais de transição de ciclo.",
+			2024,
+			"link",
+			"https://xilonga.med.gov.ao/conteudos/manuais-escolares/9-classe-ingles",
+			"Currículo Oficial MED Angola",
+		},
+
 		{
 			"Manual de Estudo do Meio — 2ª Classe",
 			"Ministério da Educação de Angola (INIDE / MED)",
@@ -733,7 +933,7 @@ func (db *DB) SeedInitialData() error {
 		// II CICLO — INFORMÁTICA E TECNOLOGIAS (TI)
 		// =========================================================================
 		{
-			"Técnicas e Linguagens de Programação (TLP) — Lógica e Algoritmos",
+			"Técnicas e Linguagens de Programação (TLP) — 10ª Classe",
 			"Currículo Técnico Médio de Informática de Angola",
 			"informatica",
 			"segundo-ciclo-ti",
@@ -744,7 +944,19 @@ func (db *DB) SeedInitialData() error {
 			"Ensino Técnico Médio Angola",
 		},
 		{
-			"Sistemas de Exploração e Arquitetura de Computadores (SEAC)",
+			"Sistemas de Informação e Base de Dados (SIBD) — 12ª Classe",
+			"Currículo Técnico Médio de Informática de Angola",
+			"informatica",
+			"segundo-ciclo-ti",
+			"Modelação relacional (ER), normalização (1FN a 3FN), SQL DDL/DML, transações ACID, integridade referencial e desenvolvimento de bases de dados.",
+			2025,
+			"link",
+			"https://openlibra.com/pt/book/bases-de-dados-relacionais",
+			"Ensino Técnico Médio Angola",
+		},
+
+		{
+			"Sistemas de Exploração e Arquitetura de Computadores (SEAC) — 10ª Classe",
 			"Currículo Técnico Médio de Informática de Angola",
 			"informatica",
 			"segundo-ciclo-ti",
@@ -755,7 +967,7 @@ func (db *DB) SeedInitialData() error {
 			"Ensino Técnico Médio Angola",
 		},
 		{
-			"Redes de Comunicação e Computadores",
+			"Redes de Comunicação e Computadores (RCC) — 11ª Classe",
 			"Currículo Técnico Médio de Informática de Angola",
 			"informatica",
 			"segundo-ciclo-ti",
@@ -1595,16 +1807,48 @@ func (db *DB) SeedInitialData() error {
 		_ = db.SqlDB.QueryRow("SELECT id FROM disciplinas WHERE slug = ?", o.materiaSlug).Scan(&matID)
 		_ = db.SqlDB.QueryRow("SELECT id FROM niveis WHERE slug = ?", o.nivelSlug).Scan(&nivID)
 
+		classe, tipoMat := extrairClasseETipoCurricular(o.titulo, o.nivelSlug, o.submetidoPor)
+
 		_, err := db.SqlDB.Exec(`
-			INSERT OR IGNORE INTO livros (
+			INSERT INTO livros (
 				titulo, autor, disciplina_id, nivel_id, sinopse,
-				ano_publicacao, formato, link_externo, status, submetido_por
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'ativo', ?)
-		`, o.titulo, o.autor, matID, nivID, o.sinopse, o.ano, o.formato, o.link, o.submetidoPor)
+				ano_publicacao, classe, tipo_material, formato, link_externo, status, submetido_por
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ativo', ?)
+			ON CONFLICT(titulo, autor) DO UPDATE SET
+				classe = excluded.classe,
+				tipo_material = excluded.tipo_material,
+				disciplina_id = excluded.disciplina_id,
+				nivel_id = excluded.nivel_id
+		`, o.titulo, o.autor, matID, nivID, o.sinopse, o.ano, classe, tipoMat, o.formato, o.link, o.submetidoPor)
 		if err != nil {
 			return fmt.Errorf("seed livro %s: %w", o.titulo, err)
 		}
 	}
 
 	return nil
+}
+
+func extrairClasseETipoCurricular(titulo, nivelSlug, submetidoPor string) (int, string) {
+	classe := 0
+	for c := 12; c >= 1; c-- {
+		p1 := fmt.Sprintf("%dª Classe", c)
+		p2 := fmt.Sprintf("%da Classe", c)
+		p3 := fmt.Sprintf("%dª classe", c)
+		p4 := fmt.Sprintf("%da classe", c)
+		if strings.Contains(titulo, p1) || strings.Contains(titulo, p2) || strings.Contains(titulo, p3) || strings.Contains(titulo, p4) {
+			classe = c
+			break
+		}
+	}
+
+	tipo := "manual_oficial"
+	if nivelSlug == "geral" || strings.Contains(submetidoPor, "Literatura") || strings.Contains(submetidoPor, "Cânone") {
+		tipo = "literatura"
+	} else if nivelSlug == "formacao-pratica" || strings.Contains(submetidoPor, "Extensão") || strings.Contains(submetidoPor, "Saúde") || strings.Contains(submetidoPor, "Línguas Nacionais") {
+		tipo = "apoio"
+	} else if classe == 0 {
+		tipo = "apoio"
+	}
+
+	return classe, tipo
 }

@@ -2,7 +2,9 @@ package curator
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"biblioteca-betania/internal/database"
@@ -75,6 +77,11 @@ func (w *Worker) processarFila() {
 		}
 
 		if parecer.Aprovado {
+			classe := extrairClasseNumero(sub.EstudanteClasse)
+			if classe == 0 {
+				classe = extrairClasseNumero(parecer.TituloNormalizado)
+			}
+
 			// Adicionar livro automaticamente ao acervo ativo
 			novoLivro := &models.Livro{
 				Titulo:        parecer.TituloNormalizado,
@@ -83,6 +90,8 @@ func (w *Worker) processarFila() {
 				NivelID:       sub.NivelID,
 				Sinopse:       parecer.SinopseResumo,
 				AnoPublicacao: parecer.AnoAproximado,
+				Classe:        classe,
+				TipoMaterial:  "apoio",
 				Formato:       sub.TipoEnvio,
 				ArquivoURL:    sub.ArquivoPath,
 				LinkExterno:   sub.LinkURL,
@@ -107,4 +116,19 @@ func (w *Worker) processarFila() {
 			log.Printf("[Curator] Submissão #%d REJEITADA pela IA. Motivo: %s", sub.ID, parecer.Parecer)
 		}
 	}
+}
+
+func extrairClasseNumero(s string) int {
+	sLower := strings.ToLower(s)
+	for c := 12; c >= 1; c-- {
+		if strings.Contains(sLower, fmt.Sprintf("%dª", c)) ||
+			strings.Contains(sLower, fmt.Sprintf("%da", c)) ||
+			strings.Contains(sLower, fmt.Sprintf("%dº", c)) ||
+			strings.Contains(sLower, fmt.Sprintf("%do", c)) ||
+			strings.Contains(sLower, fmt.Sprintf("%d classe", c)) ||
+			strings.Contains(sLower, fmt.Sprintf("%d-classe", c)) {
+			return c
+		}
+	}
+	return 0
 }

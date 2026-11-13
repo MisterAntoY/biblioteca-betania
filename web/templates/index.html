@@ -38,19 +38,61 @@
 
       <form action="/" method="GET" class="search-box-card">
         <input type="text" name="q" value="{{ .Query }}" placeholder="Pesquise por título, autor, disciplina ou palavra-chave..." class="search-input" autofocus>
+        {{ if .Classe }}<input type="hidden" name="classe" value="{{ .Classe }}">{{ end }}
         {{ if .DisciplinaID }}<input type="hidden" name="disciplina" value="{{ .DisciplinaID }}">{{ end }}
         {{ if .NivelID }}<input type="hidden" name="nivel" value="{{ .NivelID }}">{{ end }}
         <button type="submit" class="search-btn">Pesquisar</button>
       </form>
     </section>
 
+    <!-- Seletor Rápido de Classe Escolar (1ª à 12ª Classe) -->
+    <section class="class-selector-card">
+      <div class="class-selector-header">
+        <span class="class-selector-icon">🎒</span>
+        <div>
+          <h3 class="class-selector-title">Selecione a sua Classe Escolar</h3>
+          <p class="class-selector-desc">Manuais didáticos e conteúdos curriculares oficiais de Angola</p>
+        </div>
+      </div>
+      
+      <div class="class-groups-container">
+        <a href="/?classe=0{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 0 }}active{{ end }}">
+          Todas
+        </a>
+
+        <div class="class-group">
+          <span class="class-group-label">Primário:</span>
+          <a href="/?classe=1{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 1 }}active{{ end }}">1ª</a>
+          <a href="/?classe=2{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 2 }}active{{ end }}">2ª</a>
+          <a href="/?classe=3{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 3 }}active{{ end }}">3ª</a>
+          <a href="/?classe=4{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 4 }}active{{ end }}">4ª</a>
+          <a href="/?classe=5{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 5 }}active{{ end }}">5ª</a>
+          <a href="/?classe=6{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 6 }}active{{ end }}">6ª</a>
+        </div>
+
+        <div class="class-group">
+          <span class="class-group-label">I Ciclo:</span>
+          <a href="/?classe=7{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 7 }}active{{ end }}">7ª</a>
+          <a href="/?classe=8{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 8 }}active{{ end }}">8ª</a>
+          <a href="/?classe=9{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 9 }}active{{ end }}">9ª</a>
+        </div>
+
+        <div class="class-group">
+          <span class="class-group-label">II Ciclo:</span>
+          <a href="/?classe=10{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 10 }}active{{ end }}">10ª</a>
+          <a href="/?classe=11{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 11 }}active{{ end }}">11ª</a>
+          <a href="/?classe=12{{ if .Query }}&q={{ .Query }}{{ end }}" class="class-btn {{ if eq .Classe 12 }}active{{ end }}">12ª</a>
+        </div>
+      </div>
+    </section>
+
     <!-- Pílulas de Matérias Escolares -->
     <div class="disciplines-pills-bar">
-      <a href="/{{ if .Query }}?q={{ .Query }}{{ end }}" class="pill-item {{ if eq .DisciplinaID 0 }}active{{ end }}">
+      <a href="/?disciplina=0{{ if .Classe }}&classe={{ .Classe }}{{ end }}{{ if .Query }}&q={{ .Query }}{{ end }}" class="pill-item {{ if eq .DisciplinaID 0 }}active{{ end }}">
         🌟 Todas as Disciplinas
       </a>
       {{ range .Disciplinas }}
-      <a href="/?disciplina={{ .ID }}{{ if $.Query }}&q={{ $.Query }}{{ end }}" class="pill-item {{ if eq $.DisciplinaID .ID }}active{{ end }}">
+      <a href="/?disciplina={{ .ID }}{{ if $.Classe }}&classe={{ $.Classe }}{{ end }}{{ if $.Query }}&q={{ $.Query }}{{ end }}" class="pill-item {{ if eq $.DisciplinaID .ID }}active{{ end }}">
         {{ .Icone }} {{ .Nome }}
       </a>
       {{ end }}
@@ -62,6 +104,7 @@
       <div>
         <form action="/" method="GET" style="display:inline-flex; align-items:center; gap:0.5rem;">
           {{ if .Query }}<input type="hidden" name="q" value="{{ .Query }}">{{ end }}
+          {{ if .Classe }}<input type="hidden" name="classe" value="{{ .Classe }}">{{ end }}
           {{ if .DisciplinaID }}<input type="hidden" name="disciplina" value="{{ .DisciplinaID }}">{{ end }}
           <label for="filtro-nivel" style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Nível:</label>
           <select id="filtro-nivel" name="nivel" onchange="this.form.submit()" style="padding:0.35rem 0.65rem; border-radius:6px; border:1px solid var(--border); font-size:0.85rem;">
@@ -81,6 +124,8 @@
       <article class="book-card">
         <div>
           <div class="book-badge-row">
+            {{ if gt .Classe 0 }}<span class="badge-school-class">🎒 {{ .Classe }}ª Classe</span>{{ end }}
+            {{ if eq .TipoMaterial "manual_oficial" }}<span class="badge-official">📘 Manual Oficial</span>{{ end }}
             {{ if .DisciplinaNome }}<span class="badge-discipline">{{ .DisciplinaNome }}</span>{{ end }}
             {{ if .NivelNome }}<span class="badge-level">{{ .NivelNome }}</span>{{ end }}
           </div>
@@ -103,13 +148,13 @@
     {{ if gt .TotalPaginas 1 }}
     <nav class="pagination-nav">
       {{ if gt .Pagina 1 }}
-      <a href="/?p={{ sub .Pagina 1 }}{{ if .Query }}&q={{ .Query }}{{ end }}{{ if .DisciplinaID }}&disciplina={{ .DisciplinaID }}{{ end }}">&larr; Anterior</a>
+      <a href="/?p={{ sub .Pagina 1 }}{{ if .Query }}&q={{ .Query }}{{ end }}{{ if .Classe }}&classe={{ .Classe }}{{ end }}{{ if .DisciplinaID }}&disciplina={{ .DisciplinaID }}{{ end }}">&larr; Anterior</a>
       {{ end }}
       <span style="display:inline-flex; align-items:center; padding:0 0.75rem; font-weight:600; font-size:0.85rem; color:var(--text-muted);">
         Página {{ .Pagina }} de {{ .TotalPaginas }}
       </span>
       {{ if lt .Pagina .TotalPaginas }}
-      <a href="/?p={{ add .Pagina 1 }}{{ if .Query }}&q={{ .Query }}{{ end }}{{ if .DisciplinaID }}&disciplina={{ .DisciplinaID }}{{ end }}">Próxima &rarr;</a>
+      <a href="/?p={{ add .Pagina 1 }}{{ if .Query }}&q={{ .Query }}{{ end }}{{ if .Classe }}&classe={{ .Classe }}{{ end }}{{ if .DisciplinaID }}&disciplina={{ .DisciplinaID }}{{ end }}">Próxima &rarr;</a>
       {{ end }}
     </nav>
     {{ end }}

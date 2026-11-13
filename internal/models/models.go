@@ -29,6 +29,8 @@ type Livro struct {
 	NivelNome      string    `json:"nivel_nome,omitempty"`
 	Sinopse        string    `json:"sinopse"`
 	AnoPublicacao  int       `json:"ano_publicacao"`
+	Classe         int       `json:"classe"` // 1..12, 0 para geral
+	TipoMaterial   string    `json:"tipo_material"` // manual_oficial, literatura, apoio
 	Formato        string    `json:"formato"` // pdf, docx, link
 	ArquivoURL     string    `json:"arquivo_url,omitempty"`
 	LinkExterno    string    `json:"link_externo,omitempty"`

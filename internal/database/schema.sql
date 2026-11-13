@@ -32,6 +32,8 @@ CREATE TABLE IF NOT EXISTS livros (
     nivel_id INTEGER REFERENCES niveis(id) ON DELETE SET NULL,
     sinopse TEXT,
     ano_publicacao INTEGER,
+    classe INTEGER DEFAULT 0, -- 1..12, 0 para geral/não especificado
+    tipo_material TEXT NOT NULL DEFAULT 'manual_oficial', -- manual_oficial, literatura, apoio
     formato TEXT NOT NULL DEFAULT 'pdf', -- pdf, docx, link
     arquivo_url TEXT,
     link_externo TEXT,
@@ -48,6 +50,8 @@ CREATE TABLE IF NOT EXISTS livros (
 CREATE INDEX IF NOT EXISTS idx_livros_status_id ON livros(status, id DESC);
 CREATE INDEX IF NOT EXISTS idx_livros_disciplina ON livros(disciplina_id, status);
 CREATE INDEX IF NOT EXISTS idx_livros_nivel ON livros(nivel_id, status);
+CREATE INDEX IF NOT EXISTS idx_livros_classe ON livros(classe, status);
+CREATE INDEX IF NOT EXISTS idx_livros_tipo_material ON livros(tipo_material, status);
 CREATE INDEX IF NOT EXISTS idx_livros_criado_em ON livros(criado_em DESC);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_livros_titulo_autor ON livros(titulo, autor);
 

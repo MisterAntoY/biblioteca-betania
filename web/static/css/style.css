@@ -177,6 +177,86 @@ a:hover {
   background: var(--primary-hover);
 }
 
+/* Seletor de Classe Escolar */
+.class-selector-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem auto 1.5rem auto;
+  box-shadow: var(--shadow-sm);
+}
+.class-selector-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.class-selector-icon {
+  font-size: 1.5rem;
+}
+.class-selector-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+.class-selector-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+.class-groups-container {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+.class-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--bg-main);
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.class-group-label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-right: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+.class-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 32px;
+  padding: 0 0.6rem;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  transition: all 0.15s ease;
+}
+.class-btn:hover {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-color: #bae6fd;
+  text-decoration: none;
+}
+.class-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  text-decoration: none;
+  box-shadow: 0 2px 4px rgba(2, 132, 199, 0.25);
+}
+
 /* Pílulas de Disciplinas */
 .disciplines-pills-bar {
   display: flex;
@@ -264,6 +344,24 @@ a:hover {
   border-radius: 9999px;
   background: var(--accent-light);
   color: #065f46;
+}
+.badge-school-class {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+}
+.badge-official {
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  background: var(--primary-light);
+  color: var(--primary-hover);
+  border: 1px solid #bae6fd;
 }
 
 .book-title {
