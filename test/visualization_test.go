@@ -248,4 +248,13 @@ func TestVisualizationFullE2E(t *testing.T) {
 		}
 		t.Logf("✓ Classe %dª validada: %d obras oficiais catalogadas com sucesso", c, totalClasse)
 	}
+
+	// 10. Testar Presença de Capas Reais 3:4 e Efeito de Lombada Física
+	if !strings.Contains(bodyHome, "book-cover-container") || !strings.Contains(bodyHome, "book-cover-img") {
+		t.Fatalf("elementos de capa de livro não encontrados no HTML da Home")
+	}
+	if !strings.Contains(bodyHome, "book-cover-spine") {
+		t.Fatalf("efeito físico de lombada da capa ausente no HTML")
+	}
+	t.Logf("✓ Capas editoriais 3:4 e lombadas renderizadas com sucesso nos cartões")
 }

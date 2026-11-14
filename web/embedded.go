@@ -6,9 +6,10 @@ import (
 	"html/template"
 	"io/fs"
 	"net/http"
+	"os"
 )
 
-//go:embed static/*
+//go:embed all:static
 var StaticFS embed.FS
 
 //go:embed templates/*
@@ -45,6 +46,14 @@ func CarregarTemplates() (*template.Template, error) {
 
 // StaticFileServer devolve o handler para servir CSS, JS e imagens embutidas
 func StaticFileServer() http.Handler {
+	// Se a pasta física existir em disco, serve diretamente para suporte rápido a uploads e capas
+	for _, localDir := range []string{"web/static", "/home/rmendes/biblioteca-betania/web/static"} {
+		if fi, err := os.Stat(localDir); err == nil && fi.IsDir() {
+			return http.FileServer(http.Dir(localDir))
+		}
+	}
+
+	// Fallback para os assets embutidos no binário
 	sub, err := fs.Sub(StaticFS, "static")
 	if err != nil {
 		panic(err)

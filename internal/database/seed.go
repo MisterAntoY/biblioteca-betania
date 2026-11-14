@@ -1808,18 +1808,20 @@ func (db *DB) SeedInitialData() error {
 		_ = db.SqlDB.QueryRow("SELECT id FROM niveis WHERE slug = ?", o.nivelSlug).Scan(&nivID)
 
 		classe, tipoMat := extrairClasseETipoCurricular(o.titulo, o.nivelSlug, o.submetidoPor)
+		capaURL := gerarSlugCapa(o.titulo)
 
 		_, err := db.SqlDB.Exec(`
 			INSERT INTO livros (
 				titulo, autor, disciplina_id, nivel_id, sinopse,
-				ano_publicacao, classe, tipo_material, formato, link_externo, status, submetido_por
-			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ativo', ?)
+				ano_publicacao, classe, tipo_material, capa_url, formato, link_externo, status, submetido_por
+			) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'ativo', ?)
 			ON CONFLICT(titulo, autor) DO UPDATE SET
 				classe = excluded.classe,
 				tipo_material = excluded.tipo_material,
+				capa_url = excluded.capa_url,
 				disciplina_id = excluded.disciplina_id,
 				nivel_id = excluded.nivel_id
-		`, o.titulo, o.autor, matID, nivID, o.sinopse, o.ano, classe, tipoMat, o.formato, o.link, o.submetidoPor)
+		`, o.titulo, o.autor, matID, nivID, o.sinopse, o.ano, classe, tipoMat, capaURL, o.formato, o.link, o.submetidoPor)
 		if err != nil {
 			return fmt.Errorf("seed livro %s: %w", o.titulo, err)
 		}
@@ -1851,4 +1853,37 @@ func extrairClasseETipoCurricular(titulo, nivelSlug, submetidoPor string) (int, 
 	}
 
 	return classe, tipo
+}
+
+func gerarSlugCapa(titulo string) string {
+	var b strings.Builder
+	for _, r := range strings.ToLower(titulo) {
+		switch r {
+		case 'á', 'à', 'ã', 'â', 'ä', 'ª':
+			b.WriteRune('a')
+		case 'é', 'è', 'ê', 'ë':
+			b.WriteRune('e')
+		case 'í', 'ì', 'î', 'ï':
+			b.WriteRune('i')
+		case 'ó', 'ò', 'õ', 'ô', 'ö', 'º':
+			b.WriteRune('o')
+		case 'ú', 'ù', 'û', 'ü':
+			b.WriteRune('u')
+		case 'ç':
+			b.WriteRune('c')
+		case 'ñ':
+			b.WriteRune('n')
+		default:
+			if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') {
+				b.WriteRune(r)
+			} else if r == ' ' || r == '-' || r == '_' || r == '—' || r == '/' {
+				str := b.String()
+				if len(str) > 0 && str[len(str)-1] != '-' {
+					b.WriteRune('-')
+				}
+			}
+		}
+	}
+	s := strings.Trim(b.String(), "-")
+	return fmt.Sprintf("/static/images/covers/capa_%s.jpg", s)
 }

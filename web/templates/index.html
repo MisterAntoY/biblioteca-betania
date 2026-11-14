@@ -122,7 +122,18 @@
     <div class="books-grid">
       {{ range .Livros }}
       <article class="book-card">
-        <div>
+        <div class="book-cover-container">
+          <div class="book-cover-wrapper">
+            <img src="{{ if .CapaURL }}{{ .CapaURL }}{{ else }}/static/images/covers/default.jpg{{ end }}"
+                 alt="Capa de {{ .Titulo }}"
+                 class="book-cover-img"
+                 loading="lazy"
+                 onerror="this.onerror=null; this.src='/static/images/covers/default.jpg';">
+            <div class="book-cover-spine"></div>
+          </div>
+        </div>
+
+        <div class="book-card-body">
           <div class="book-badge-row">
             {{ if gt .Classe 0 }}<span class="badge-school-class">🎒 {{ .Classe }}ª Classe</span>{{ end }}
             {{ if eq .TipoMaterial "manual_oficial" }}<span class="badge-official">📘 Manual Oficial</span>{{ end }}

@@ -31,6 +31,7 @@ type Livro struct {
 	AnoPublicacao  int       `json:"ano_publicacao"`
 	Classe         int       `json:"classe"` // 1..12, 0 para geral
 	TipoMaterial   string    `json:"tipo_material"` // manual_oficial, literatura, apoio
+	CapaURL        string    `json:"capa_url,omitempty"`
 	Formato        string    `json:"formato"` // pdf, docx, link
 	ArquivoURL     string    `json:"arquivo_url,omitempty"`
 	LinkExterno    string    `json:"link_externo,omitempty"`

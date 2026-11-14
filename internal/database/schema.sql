@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS livros (
     ano_publicacao INTEGER,
     classe INTEGER DEFAULT 0, -- 1..12, 0 para geral/não especificado
     tipo_material TEXT NOT NULL DEFAULT 'manual_oficial', -- manual_oficial, literatura, apoio
+    capa_url TEXT DEFAULT '',
     formato TEXT NOT NULL DEFAULT 'pdf', -- pdf, docx, link
     arquivo_url TEXT,
     link_externo TEXT,

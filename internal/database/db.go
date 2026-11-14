@@ -72,6 +72,7 @@ func (db *DB) migrate() error {
 	// Migrações incrementais idempotentes
 	_, _ = db.SqlDB.Exec("ALTER TABLE livros ADD COLUMN classe INTEGER DEFAULT 0")
 	_, _ = db.SqlDB.Exec("ALTER TABLE livros ADD COLUMN tipo_material TEXT NOT NULL DEFAULT 'manual_oficial'")
+	_, _ = db.SqlDB.Exec("ALTER TABLE livros ADD COLUMN capa_url TEXT DEFAULT ''")
 	_, _ = db.SqlDB.Exec("CREATE INDEX IF NOT EXISTS idx_livros_classe ON livros(classe, status)")
 	_, _ = db.SqlDB.Exec("CREATE INDEX IF NOT EXISTS idx_livros_tipo_material ON livros(tipo_material, status)")
 
@@ -204,7 +205,7 @@ func (db *DB) ListarLivros(f FiltrosBusca) ([]models.Livro, int64, error) {
 		SELECT 
 			l.id, l.titulo, l.autor, l.disciplina_id, COALESCE(d.nome, ''),
 			l.nivel_id, COALESCE(n.nome, ''), l.sinopse, l.ano_publicacao,
-			COALESCE(l.classe, 0), COALESCE(l.tipo_material, 'manual_oficial'),
+			COALESCE(l.classe, 0), COALESCE(l.tipo_material, 'manual_oficial'), COALESCE(l.capa_url, ''),
 			l.formato, COALESCE(l.arquivo_url, ''), COALESCE(l.link_externo, ''),
 			l.tamanho_bytes, l.status, l.submetido_por, l.visualizacoes, l.downloads, l.criado_em
 		FROM livros l
@@ -230,7 +231,7 @@ func (db *DB) ListarLivros(f FiltrosBusca) ([]models.Livro, int64, error) {
 		if err := rows.Scan(
 			&l.ID, &l.Titulo, &l.Autor, &discID, &l.DisciplinaNome,
 			&nivID, &l.NivelNome, &l.Sinopse, &l.AnoPublicacao,
-			&l.Classe, &l.TipoMaterial,
+			&l.Classe, &l.TipoMaterial, &l.CapaURL,
 			&l.Formato, &l.ArquivoURL, &l.LinkExterno,
 			&l.TamanhoBytes, &l.Status, &l.SubmetidoPor, &l.Visualizacoes, &l.Downloads, &l.CriadoEm,
 		); err != nil {
@@ -256,7 +257,7 @@ func (db *DB) ObterLivroPorID(id int64) (*models.Livro, error) {
 		SELECT 
 			l.id, l.titulo, l.autor, l.disciplina_id, COALESCE(d.nome, ''),
 			l.nivel_id, COALESCE(n.nome, ''), l.sinopse, l.ano_publicacao,
-			COALESCE(l.classe, 0), COALESCE(l.tipo_material, 'manual_oficial'),
+			COALESCE(l.classe, 0), COALESCE(l.tipo_material, 'manual_oficial'), COALESCE(l.capa_url, ''),
 			l.formato, COALESCE(l.arquivo_url, ''), COALESCE(l.link_externo, ''),
 			l.tamanho_bytes, l.status, l.submetido_por, l.visualizacoes, l.downloads, l.criado_em
 		FROM livros l
@@ -269,7 +270,7 @@ func (db *DB) ObterLivroPorID(id int64) (*models.Livro, error) {
 	err := db.SqlDB.QueryRow(query, id).Scan(
 		&l.ID, &l.Titulo, &l.Autor, &discID, &l.DisciplinaNome,
 		&nivID, &l.NivelNome, &l.Sinopse, &l.AnoPublicacao,
-		&l.Classe, &l.TipoMaterial,
+		&l.Classe, &l.TipoMaterial, &l.CapaURL,
 		&l.Formato, &l.ArquivoURL, &l.LinkExterno,
 		&l.TamanhoBytes, &l.Status, &l.SubmetidoPor, &l.Visualizacoes, &l.Downloads, &l.CriadoEm,
 	)
@@ -322,19 +323,27 @@ func (db *DB) InserirLivro(l *models.Livro) (int64, error) {
 	query := `
 		INSERT INTO livros (
 			titulo, autor, disciplina_id, nivel_id, sinopse, ano_publicacao,
-			classe, tipo_material,
+			classe, tipo_material, capa_url,
 			formato, arquivo_url, link_externo, tamanho_bytes, status, submetido_por
-		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+		) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 	`
 	res, err := db.SqlDB.Exec(query,
 		l.Titulo, l.Autor, discID, nivID, l.Sinopse, l.AnoPublicacao,
-		l.Classe, l.TipoMaterial,
+		l.Classe, l.TipoMaterial, l.CapaURL,
 		l.Formato, l.ArquivoURL, l.LinkExterno, l.TamanhoBytes, l.Status, l.SubmetidoPor,
 	)
 	if err != nil {
 		return 0, err
 	}
 	return res.LastInsertId()
+}
+
+func (db *DB) AtualizarCapaLivro(id int64, capaURL string) error {
+	db.mu.Lock()
+	defer db.mu.Unlock()
+
+	_, err := db.SqlDB.Exec("UPDATE livros SET capa_url = ? WHERE id = ?", capaURL, id)
+	return err
 }
 
 // -------------------------------------------------------------
