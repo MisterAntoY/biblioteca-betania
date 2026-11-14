@@ -18,3 +18,4 @@ uploads/*
 *.log
 *.tmp
 test_uploads/
+scratch/

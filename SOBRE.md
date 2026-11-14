@@ -91,19 +91,19 @@ Obras de utilidade pública para os desafios reais das comunidades:
 
 ---
 
-## 🎨 4. Experiência Visual e Identidade do Colégio Betânia
+## 🎨 4. Experiência Visual e Identidade do Complexo Escolar Privado Betânia (Zango 3)
 
-A interface da BiblioTânia foi desenhada para proporcionar a sensação nobre de uma estante de biblioteca tradicional, incorporando os padrões de identidade visual do Colégio Betânia:
+A interface da BiblioTânia foi desenhada para proporcionar a sensação nobre de uma estante de biblioteca tradicional, incorporando os padrões de identidade visual autêntica do Complexo Escolar Privado Betânia - Zango 3:
 
-- **Paleta Cromática Institucional:**
-  - **Azul Marinho Betânia (`#0B1E3B`):** Transmite estabilidade, sobriedade e prestígio académico.
-  - **Ouro Académico (`#D97706` / `#F59E0B`):** Simboliza a luz do conhecimento, a sabedoria e a excelência educacional.
-  - **Superfícies de Leitura:** Fundo claro com contraste otimizado (`#F8FAFC` / `#FFFFFF`), tipografia serifada e sem serifa que garantem legibilidade sem fadiga visual em sessões prolongadas de estudo.
-- **Capas Editoriais Físicas (Proporção 3:4):**
-  - Cada livro do catálogo possui uma capa exclusiva gerada na proporção editorial clássica de 3:4.
-  - Detalhe de **lombada curva sombreada** à esquerda que simula o encadernamento tradicional de um livro físico.
-  - Efeito tridimensional suave ao passar o cursor (*hover 3D* com elevação e sombra projetada).
-  - Brasão oficial do Colégio Betânia e selo do Ministério da Educação / INIDE apostos nas obras curriculares.
+- **Paleta Cromática Institucional Oficial:**
+  - **Azul Betânia Zango 3 (`#0094DA` / `#0077B6`):** Tom principal vibrante extraído diretamente do emblema oficial da instituição, transmitindo vitalidade, acolhimento e compromisso com o futuro.
+  - **Azul Noturno Institucional (`#0B1E3B`):** Transmite autoridade, estabilidade e sobriedade académica nos cabeçalhos e títulos.
+  - **Ouro Académico (`#D97706` / `#F59E0B`):** Destaca honras curriculares, anos letivos e selos de distinção pedagógica.
+  - **Superfícies de Leitura:** Fundo claro com contraste otimizado (`#F8FAFC` / `#FFFFFF`), tipografia de alto padrão (`Plus Jakarta Sans` para interface e `Newsreader` para títulos de obras literárias), garantindo conforto visual absoluto.
+- **Capas Editoriais Físicas e Originais (Proporção 3:4):**
+  - **Literatura Angolana:** Capas originais de editoras de prestígio (União dos Escritores Angolanos, Caminho, Leya, Dom Quixote) catalogadas e integradas.
+  - **Manuais Escolares Oficiais:** Fac-símile exato do padrão curricular do MED/INIDE com a insígnia da República de Angola e o timbre oficial do Betânia.
+  - **Lombada Curva com Relevo Físico:** Textura tátil e micro-interação tridimensional (*hover 3D*).
 
 ---
 

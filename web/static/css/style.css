@@ -1,13 +1,23 @@
 /* ==========================================================================
-   BiblioTânia — Biblioteca Digital do Colégio Betânia
-   Identidade Visual Institucional: Azul Marinho Profundo & Ouro Académico
-   Design Ultraleve · Zero Dependências Externas · WCAG AAA
+   BiblioTânia — Complexo Escolar Privado Betânia (Zango 3, Luanda)
+   Identidade Oficial: Azul Betânia (#0094DA) & Azul Noturno (#0B1E3B)
+   Tipografia Editorial Impeccable (Zero AI Slop) · WCAG AAA
    ========================================================================== */
 
 :root {
-  /* Paleta Oficial Colégio Betânia */
-  --brand-navy-950: #061124;
-  --brand-navy-900: #0b1e3b; /* Cor Primária Dominante */
+  /* Tipografia Editorial de Alto Padrão */
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-serif: 'Newsreader', Charter, 'Bitstream Charter', 'Times New Roman', Georgia, serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+
+  /* Cores Oficiais Complexo Escolar Privado Betânia - Zango 3 */
+  --brand-blue: #0094da;        /* Azul Oficial Betânia Zango 3 */
+  --brand-blue-hover: #0077b6;
+  --brand-blue-light: #f0f9ff;
+  --brand-blue-border: #bae6fd;
+
+  --brand-navy-950: #06152d;
+  --brand-navy-900: #0b1e3b;    /* Azul Noturno Institucional */
   --brand-navy-800: #122c54;
   --brand-navy-700: #1b3d73;
   --brand-navy-600: #25529a;
@@ -15,8 +25,8 @@
   --brand-navy-border: #bfdbfe;
 
   --brand-gold-600: #b45309;
-  --brand-gold-500: #d97706; /* Ouro Académico */
-  --brand-gold-400: #f59e0b; /* Dourado Vivo */
+  --brand-gold-500: #d97706;    /* Ouro Académico */
+  --brand-gold-400: #f59e0b;
   --brand-gold-300: #fbbf24;
   --brand-gold-light: #fef3c7;
   --brand-gold-border: #fde68a;
@@ -29,10 +39,10 @@
   --bg-card: #ffffff;
   --bg-elevated: #ffffff;
   --text-main: #0f172a;
-  --text-muted: #475569;
+  --text-muted: #334155;
   --text-subtle: #64748b;
   --border: #e2e8f0;
-  --border-focus: #f59e0b;
+  --border-focus: #0094da;
 
   --radius-sm: 6px;
   --radius: 12px;
@@ -41,7 +51,7 @@
   --shadow-sm: 0 1px 3px rgba(11, 30, 59, 0.06);
   --shadow-md: 0 4px 16px -2px rgba(11, 30, 59, 0.08);
   --shadow-lg: 0 12px 28px -4px rgba(11, 30, 59, 0.12);
-  --shadow-gold: 0 4px 12px rgba(217, 119, 6, 0.25);
+  --shadow-blue: 0 4px 14px rgba(0, 148, 218, 0.25);
 }
 
 *, *::before, *::after {
@@ -51,11 +61,19 @@
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
   background-color: var(--bg-main);
   color: var(--text-main);
-  line-height: 1.55;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-sans);
+  letter-spacing: -0.025em;
+  font-weight: 700;
+  color: var(--brand-navy-900);
 }
 
 a {
@@ -546,18 +564,21 @@ a:hover {
   color: var(--accent-emerald);
 }
 
-.book-title {
+.book-title, .book-card-title {
+  font-family: var(--font-serif);
   font-size: 1.15rem;
-  font-weight: 800;
-  color: var(--brand-navy-900);
+  font-weight: 600;
+  color: var(--text-main);
   line-height: 1.35;
+  letter-spacing: -0.015em;
   margin-bottom: 0.35rem;
 }
 .book-author {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--brand-gold-600);
-  margin-bottom: 0.85rem;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--brand-blue-hover);
+  margin-bottom: 0.75rem;
 }
 .book-synopsis {
   font-size: 0.86rem;

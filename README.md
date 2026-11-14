@@ -1,131 +1,207 @@
-# 📖 BiblioTânia — Biblioteca Digital do Colégio Betânia
+<p align="center">
+  <img src="docs/images/logo.png" alt="Complexo Escolar Privado Betânia - Zango 3" width="110" height="103" />
+</p>
 
-> **Plataforma Educacional Aberta de Alto Desempenho e Baixo Consumo**, projetada especificamente para o **Colégio Betânia**, com triagem autônoma por Inteligência Artificial e arquitetura em Go preparada para escalar rumo a 100 Milhões de obras abertas.
-> 
-> 📄 Para o manifesto pedagógico e histórico institucional completo, consulte **[SOBRE.md](SOBRE.md)**.
+<h1 align="center">BiblioTânia</h1>
 
----
+<p align="center">
+  <strong>Biblioteca Digital Oficial do Complexo Escolar Privado Betânia · Zango 3, Luanda</strong><br>
+  Plataforma educacional aberta de alto desempenho em Go, com SQLite FTS5, acervo curricular nacional do MED/INIDE e triagem autônoma por IA.
+</p>
 
-## 🏛️ 1. Visão Geral e Contexto
-A **BiblioTânia** nasceu a partir do sucesso da curadoria pedagógica e foi concebida sob medida para a realidade do **Colégio Betânia**. 
+<p align="center">
+  <a href="https://github.com/MisterAntoY/biblioteca-betania"><img src="https://shieldcn.dev/github/stars/MisterAntoY/biblioteca-betania.svg" alt="GitHub Stars" /></a>
+  <img src="https://shieldcn.dev/static/Go/1.22+.svg?logo=go" alt="Go 1.22+" />
+  <img src="https://shieldcn.dev/static/Acervo/155+Obras.svg?logo=book" alt="155 Obras" />
+  <img src="https://shieldcn.dev/static/Motor/SQLite_FTS5.svg?logo=sqlite" alt="SQLite FTS5" />
+  <a href="https://misterantoy.github.io/biblioteca-betania/"><img src="https://shieldcn.dev/static/Deploy/GitHub_Pages.svg?logo=githubpages" alt="GitHub Pages" /></a>
+  <img src="https://shieldcn.dev/github/license/MisterAntoY/biblioteca-betania.svg" alt="Licença Apache 2.0" />
+</p>
 
-Diferente de aplicações web tradicionais baseadas em Next.js e pesadas runtimes de JavaScript (que consomem centenas de megabytes de RAM e exigem manutenções constantes de pacotes npm), a BiblioTânia foi reescrita inteiramente do zero em **Go (Golang)**:
-- **Binário Único Auto-Contido (~12MB):** Todo o servidor, rotas, banco de dados embarcado, templates HTML, estilos CSS, ícones vetoriais e capas estão embutidos diretamente no executável via `go:embed`.
-- **Consumo Mínimo de Recursos:** Menos de **20MB de memória RAM** em repouso e consumo de CPU quase nulo.
-- **Zero Dependências em Produção:** Sem necessidade de Node.js, npm, Docker pesado ou serviços externos de banco de dados.
-- **Identidade Visual Institucional:** Paleta em **Azul Marinho Betânia** (`#0B1E3B`) e **Ouro Académico** (`#D97706`), com logotipo oficial e capas editoriais físicas (proporção 3:4 com relevo de lombada).
-- **Acervo Curricular Nacional:** 152+ obras didáticas abrangendo o Ensino Primário (1ª à 6ª classe), I Ciclo (7ª à 9ª classe), II Ciclo / Pré-Universitário (10ª à 12ª classe), Ensino Técnico (TLP, RCC, SEAC, SIBD), Cânone da Literatura Angolana e Línguas Nacionais (Kimbundu, Umbundu, Kikongo e Cokwe).
-
----
-
-## ⚡ 2. Arquitetura & Escala para 100 Milhões de Livros
-- **Motor de Banco de Dados:** SQLite com **FTS5** (Full Text Search) embutido, configurado em modo **WAL (Write-Ahead Logging)**, `busy_timeout` de 5.000ms e cache de memória de 64MB (`PRAGMA cache_size = -64000`).
-- **Concorrência Segura:** Serialização de escrita e leituras paralelas protegidas por `sync.RWMutex`, eliminando completamente race conditions e erros de `database is locked`.
-- **Indexação por Triggers:** Triggers atômicos no banco atualizam o índice FTS5 instantaneamente a cada nova inserção, exclusão ou atualização.
-
----
-
-## 🛡️ 3. Segurança e Robustez Operacional
-
-| Vetor de Risco | Mitigação Implementada na BiblioTânia |
-| :--- | :--- |
-| **SQL Injection** | 100% das consultas utilizam **Prepared Statements** parametrizados com placeholders `?`. Termos FTS5 são estritamente sanitizados via regex e tokenização de unicode. |
-| **Cross-Site Scripting (XSS)** | O motor nativo `html/template` de Go aplica **auto-escaping contextual automático** em todas as variáveis renderizadas. Injeção de tags `<script>` e handlers de imagem são convertidos em entidades inofensivas. |
-| **Cabeçalhos HTTP (CSP & Sniffing)** | Middleware com `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `X-Frame-Options: SAMEORIGIN` e `Referrer-Policy`. |
-| **Race Conditions** | Pool de conexões otimizado + `sync.RWMutex` serializando mutações no SQLite. Validado com `go test -race`. |
-| **Path Traversal & DoS** | Nomes de arquivos sanitizados com hashes criptográficos aleatórios; uploads limitados a 50MB via `http.MaxBytesReader`; validação de MIME types pelos primeiros 512 bytes (sniffing com `http.DetectContentType`). |
-| **SSRF em Links de Alunos** | Links externos são validados contra loopback (`localhost`, `127.0.0.1`, IPs privados RFC 1918) antes do processamento. |
+<p align="center">
+  <a href="https://misterantoy.github.io/biblioteca-betania/"><strong>🌐 Acessar Portal Web Online</strong></a> ·
+  <a href="SOBRE.md"><strong>📖 Manifesto Pedagógico & Histórico</strong></a> ·
+  <a href="#-matriz-curricular"><strong>📚 Acervo Curricular</strong></a> ·
+  <a href="#-como-executar"><strong>⚡ Execução Rápida</strong></a>
+</p>
 
 ---
 
-## 🤖 4. Mecanismo de Admissão por Inteligência Artificial
-O fluxo de novos livros segue o modelo pedagógico colaborativo:
+## ⚡ Métricas e Desempenho
 
-1. **Submissão pelo Aluno (`/submeter`):**
-   - O estudante informa seu Nome, Classe/Turma, Título, Disciplina e Nível.
-   - Fornece o material via **Arquivo (PDF / DOCX)** ou **Link Externo Público (HTTPS)**.
-2. **Registro e Fila:**
-   - A submissão é gravada com `status = 'pendente'`.
-3. **Triagem Automática pelo Worker da IA (`curator.Worker`):**
-   - O worker assíncrono avalia o material utilizando a API de IA configurada (**Google Gemini 2.5 Flash** ou **OpenAI** / **Heurística Local Educacional**).
-   - O Curador de IA avalia:
-     - **Relevância Pedagógica:** Adequação ao Ensino Primário ou Secundário do Colégio Betânia.
-     - **Segurança Escolar:** Ausência de violência, conteúdo adulto, apostas, malware ou material comercial.
-4. **Catalogação Automática:**
-   - Se **Aprovado:** A obra é imediatamente inserida no catálogo ativo (`livros`), indexada no FTS5 e disponibilizada para leitura de toda a comunidade escolar.
-   - Se **Rejeitado:** Um parecer pedagógico construtivo é gerado e registrado no **Mural da IA** (`/submissoes`) para orientação do aluno.
+| Métrica | Valor | Descrição |
+| :--- | :--- | :--- |
+| **Consumo de Memória (RAM)** | `< 20 MB` | Redução drástica em relação a runtimes tradicionais em Node.js / Next.js (que demandavam 300MB+) |
+| **Tempo de Resposta (FTS5)** | `< 1 ms` | Consultas de texto integral em milissegundos sobre centenas de milhares de termos indexados |
+| **Binário Único Compilado** | `~12 MB` | Servidor, templates, rotas e recursos embutidos nativamente via `go:embed` |
+| **Concorrência e Mutex** | `Zero Race Conditions` | Transações SQLite protegidas via WAL e `sync.RWMutex`, validado com `go test -race` |
+| **Dependências em Produção** | `0 (Zero)` | Executável auto-suficiente sem necessidade de Node.js, npm ou banco de dados externo |
 
 ---
 
-## 🚀 5. Como Executar
+## 🏛️ Visão e Arquitetura do Projeto
+
+A **BiblioTânia** foi concebida sob medida para a comunidade pedagógica do **Complexo Escolar Privado Betânia - Zango 3** (Luanda, Angola), com uma arquitetura desenhada para suportar o marco de **100 milhões de recursos educacionais abertos (REA)**.
+
+### Pilares Fundamentais:
+
+1. **Capas Editoriais Reais e Oficiais (Proporção 3:4):**
+   - **Clássicos da Literatura Angolana:** Capas originais das edições históricas (União dos Escritores Angolanos, Editorial Caminho, Leya, Dom Quixote) obtidas através de acervos públicos abertos do Open Library.
+   - **Manuais Escolares Oficiais:** Fac-símile oficial fiel ao padrão do Ministério da Educação de Angola / INIDE, com insígnia da República de Angola, cores normalizadas por disciplina e o timbre do Colégio Betânia.
+   - **Efeito de Estante Física:** Relevo de lombada curva sombreada e micro-interação tridimensional em CSS puro.
+
+2. **Triagem Autônoma por Inteligência Artificial:**
+   - Estudantes sugerem obras via `/submeter` (arquivos PDF/DOCX ou links abertos HTTPS).
+   - O worker assíncrono em segundo plano avalia a adequação didática, moral e curricular através de modelos de IA com fallback local resiliente.
+   - Transparência total através do Mural da IA (`/submissoes`).
+
+3. **Portal Híbrido (GitHub Pages + Cloud VPS):**
+   - **Frontend Estático SPA:** Hospedado gratuitamente no GitHub Pages (`https://misterantoy.github.io/biblioteca-betania/`) com busca instantânea em memória sobre `data/books.json`.
+   - **Backend Go na VPS:** Executa a triagem de IA, persistência no SQLite FTS5 e uploads de ficheiros com suporte completo a CORS.
+
+---
+
+## 📚 Matriz Curricular Nacional de Angola (INIDE / MED)
+
+O catálogo ativo reúne **155 obras didáticas e literárias** organizadas rigorosamente por ciclo e classe:
+
+```
+├── Ensino Primário (1ª à 6ª Classe)
+│   ├── Língua Portuguesa (Alfabetização, Leitura e Gramática)
+│   ├── Matemática (Aritmética, Geometria e Cálculo)
+│   ├── Estudo do Meio (Higiene, Sociedade e Meio Ambiente)
+│   ├── Ciências da Natureza (Ecologia e Seres Vivos)
+│   └── História e Geografia de Angola
+│
+├── Ensino Secundário Geral — I Ciclo (7ª à 9ª Classe)
+│   ├── Língua Portuguesa e Literatura Escolar
+│   ├── Matemática (Álgebra, Geometria Plana e Estatística)
+│   ├── Física Fundamental e Química Geral
+│   ├── Biologia Celular e Educação Moral e Cívica
+│   └── História de África e Geografia Geral
+│
+├── Ensino Secundário — II Ciclo / Pré-Universitário (10ª à 12ª Classe)
+│   ├── CFB: Matemática Avançada, Física Moderna, Química Orgânica e Genética
+│   ├── CEJ: Economia, Mercados, Noções de Direito e Ordem Jurídica Angolana
+│   └── Ciências Humanas: Filosofia Política, Ética e Sociologia de Angola
+│
+├── Ensino Técnico-Profissional (Informática)
+│   ├── TLP: Técnicas e Linguagens de Programação
+│   ├── RCC: Redes de Comunicação e Computadores
+│   ├── SEAC: Sistemas de Exploração e Arquitetura de Computadores
+│   └── SIBD: Sistemas de Informação e Bases de Dados
+│
+├── Cânone da Literatura Angolana
+│   ├── Pepetela (Mayombe, Yaka, Lueji, O Cão e os Caluandas, As Aventuras de Ngunga)
+│   ├── José Luandino Vieira (Luuanda, Domingos Xavier, Nós os do Makulusu, Velhas Estórias)
+│   ├── Agostinho Neto (Sagrada Esperança, Poemas)
+│   ├── José Eduardo Agualusa (Teoria Geral do Esquecimento, O Vendedor de Passados)
+│   ├── Ondjaki (Bom Dia Camaradas, Os Transparentes, AvóDezanove)
+│   ├── Uanhenga Xitu (Mestre Tamoda, Bola com Feitiço, Manana, Vozes da Terra)
+│   └── Paula Tavares, Manuel Rui, Viriato da Cruz, António Jacinto, Óscar Ribas
+│
+└── Línguas Nacionais & Apoio Comunitário
+    ├── Kimbundu, Umbundu, Kikongo e Cokwe (Gramáticas e Dicionários Escolares)
+    ├── Saúde Comunitária Preventiva (Malária, Nutrição Infantil e Primeiros Socorros)
+    └── Agropecuária Sustentável (Mandioca, Horticultura Tropical e Solos)
+```
+
+---
+
+## 🛡️ Segurança e Robustez Operacional
+
+```
+[Cliente Web / GitHub Pages]
+          │  HTTPS / CORS Seguro
+          ▼
+[SecurityHeadersMiddleware]
+  ├── Content-Security-Policy
+  ├── X-Content-Type-Options: nosniff
+  ├── X-Frame-Options: SAMEORIGIN
+  └── Access-Control-Allow-Origin: *
+          │
+          ▼
+   [Router / HTTP Mux]
+   ├── /api/livros       ──> Consulta Parametrizada SQLite FTS5 (Zero SQLi)
+   ├── /api/submissoes   ──> Upload Sanitizado (UUID, Sniffing MIME, máx 50MB)
+   └── /api/stats        ──> Estatísticas em Tempo Real
+          │
+          ▼
+[Curator Worker (IA)]  ──> Triagem Ética e Pedagógica em Segundo Plano
+```
+
+- **SQL Injection:** 100% das consultas utilizam *Prepared Statements* parametrizados com placeholders `?`.
+- **Cross-Site Scripting (XSS):** O motor nativo `html/template` de Go aplica *auto-escaping* contextual obrigatório.
+- **Race Conditions:** Mutex `sync.RWMutex` serializa gravações e viabiliza centenas de leituras simultâneas sem contenção de concorrência.
+- **SSRF:** URLs submetidas por estudantes são verificadas para bloquear redes privadas e endereços loopback.
+
+---
+
+## ⚡ Como Executar
 
 ### Pré-requisitos
-- Go 1.22+ (instalado no sistema).
+- **Go 1.22+** (com suporte a CGO para compilação nativa do SQLite)
 
-### Compilação e Execução
+### 1. Clonar o Repositório
 ```bash
-# 1. Clonar ou acessar a pasta
-cd /home/rmendes/biblioteca-betania
-
-# 2. Executar a suíte de testes de segurança
-make test
-
-# 3. Compilar o binário único
-make build
-
-# 4. Iniciar o servidor
-make run
+git clone https://github.com/MisterAntoY/biblioteca-betania.git
+cd biblioteca-betania
 ```
-O servidor estará disponível imediatamente em: **`http://localhost:8080`**.
+
+### 2. Executar a Suíte Completa de Testes
+```bash
+# Testes unitários e de integração
+go test -v ./test/...
+
+# Detector estrito de race conditions
+go test -race ./test/...
+```
+
+### 3. Compilar e Iniciar
+```bash
+# Compilar binário otimizado
+CGO_ENABLED=1 go build -ldflags="-s -w" -o bin/bibliotania cmd/server/main.go
+
+# Iniciar o servidor na porta desejada (padrão: 8090)
+PORT=8090 DB_PATH=./data/bibliotania.db ./bin/bibliotania
+```
+O servidor estará ativo em: **`http://localhost:8090`**.
 
 ---
 
-## ⚙️ 6. Variáveis de Ambiente (Opcionais)
-
-| Variável | Padrão | Descrição |
-| :--- | :--- | :--- |
-| `PORT` | `8080` | Porta TCP do servidor web |
-| `DB_PATH` | `./data/bibliotania.db` | Caminho do arquivo SQLite com FTS5 |
-| `UPLOAD_DIR` | `./uploads` | Diretório para armazenamento dos livros enviados pelos alunos |
-| `MAX_FILE_SIZE_MB`| `50` | Limite de tamanho por upload em Megabytes |
-| `GEMINI_API_KEY` | *(opcional)* | Chave de API para o Google Gemini 2.5 Flash |
-| `OPENAI_API_KEY` | *(opcional)* | Chave de API para OpenAI / modelo compatível |
-
-*Nota: Se nenhuma chave de API externa for configurada, o sistema ativa automaticamente o **Modo Heurístico Educacional Resiliente**, garantindo que o envio de livros e o funcionamento da biblioteca nunca sejam interrompidos.*
-
----
-
-## 📂 7. Estrutura do Código
+## 📂 Estrutura do Repositório
 
 ```
 biblioteca-betania/
 ├── cmd/
-│   └── server/main.go            # Ponto de entrada, servidor HTTP e graceful shutdown
+│   └── server/main.go            # Ponto de entrada, roteamento HTTP e graceful shutdown
+├── docs/                         # Portal estático publicado no GitHub Pages
+│   ├── css/style.css             # Estilos com identidade Betânia e capas 3:4
+│   ├── data/books.json           # Base completa dos 155 livros para busca instantânea
+│   ├── images/covers/            # 155 capas reais e oficiais em alta qualidade
+│   ├── js/app.js                 # SPA cliente com busca e sincronização com a VPS
+│   └── index.html                # Aplicação web estática
 ├── internal/
-│   ├── config/config.go          # Configurações e variáveis de ambiente
-│   ├── database/
-│   │   ├── db.go                 # Gerenciamento SQLite, concorrência, FTS5 e transações
-│   │   ├── schema.sql            # Esquema SQL otimizado para alta escala
-│   │   └── seed.go               # Carga inicial das disciplinas escolares e livros didáticos
+│   ├── config/config.go          # Variáveis de ambiente e portas
+│   ├── database/                 # SQLite FTS5, migrações atômicas e seed curricular
 │   ├── models/models.go          # Estruturas de dados de domínio
-│   ├── curator/
-│   │   ├── ai_evaluator.go       # Avaliador de IA (Gemini, OpenAI e Heurística Local)
-│   │   └── worker.go             # Fila assíncrona de triagem de submissões
-│   └── handlers/
-│       ├── handlers.go           # Middleware de segurança HTTP
-│       ├── books.go              # Catálogo, busca FTS5, leitura e detalhes
-│       └── submissions.go        # Formulário e upload seguro de estudantes
-├── web/
-│   ├── embedded.go               # Empacotamento estático via go:embed
-│   ├── static/                   # CSS puro, JS vanilla e favicon vetorial
+│   ├── curator/                  # Motor de triagem de IA e fila assíncrona
+│   └── handlers/                 # Middlewares de segurança, rotas e APIs REST
+├── web/                          # Servidor web embutido no binário Go
+│   ├── embedded.go               # Empacotamento estático via go:embed all:static
+│   ├── static/                   # CSS, favicon e capas originais
 │   └── templates/                # Templates HTML nativos seguros contra XSS
 ├── test/
-│   └── security_test.go          # Testes automatizados de SQLi, XSS, concorrência e IA
-├── Makefile                      # Automação de compilação, testes e execução
+│   ├── security_test.go          # Testes de SQLi, XSS, concorrência e upload seguro
+│   └── visualization_test.go     # Testes de visualização E2E e renderização de capas
+├── SOBRE.md                      # Manifesto pedagógico e histórico institucional
+├── Makefile                      # Automação de tarefas
 └── go.mod                        # Módulo Go e dependências mínimas
 ```
 
 ---
 
-## 📜 Licença
-Desenvolvido com foco no avanço educacional do **Colégio Betânia**. Código aberto sob licença Apache 2.0.
+## 📜 Licença e Governança
+
+Desenvolvido para o **Complexo Escolar Privado Betânia - Zango 3** (Luanda, Angola).  
+Código aberto sob a licença **Apache 2.0**.
