@@ -1,6 +1,8 @@
 # 📖 BiblioTânia — Biblioteca Digital do Colégio Betânia
 
 > **Plataforma Educacional Aberta de Alto Desempenho e Baixo Consumo**, projetada especificamente para o **Colégio Betânia**, com triagem autônoma por Inteligência Artificial e arquitetura em Go preparada para escalar rumo a 100 Milhões de obras abertas.
+> 
+> 📄 Para o manifesto pedagógico e histórico institucional completo, consulte **[SOBRE.md](SOBRE.md)**.
 
 ---
 
@@ -8,9 +10,11 @@
 A **BiblioTânia** nasceu a partir do sucesso da curadoria pedagógica e foi concebida sob medida para a realidade do **Colégio Betânia**. 
 
 Diferente de aplicações web tradicionais baseadas em Next.js e pesadas runtimes de JavaScript (que consomem centenas de megabytes de RAM e exigem manutenções constantes de pacotes npm), a BiblioTânia foi reescrita inteiramente do zero em **Go (Golang)**:
-- **Binário Único Auto-Contido (~12MB):** Todo o servidor, rotas, banco de dados embarcado, templates HTML, estilos CSS e scripts estão embutidos diretamente no executável via `go:embed`.
+- **Binário Único Auto-Contido (~12MB):** Todo o servidor, rotas, banco de dados embarcado, templates HTML, estilos CSS, ícones vetoriais e capas estão embutidos diretamente no executável via `go:embed`.
 - **Consumo Mínimo de Recursos:** Menos de **20MB de memória RAM** em repouso e consumo de CPU quase nulo.
 - **Zero Dependências em Produção:** Sem necessidade de Node.js, npm, Docker pesado ou serviços externos de banco de dados.
+- **Identidade Visual Institucional:** Paleta em **Azul Marinho Betânia** (`#0B1E3B`) e **Ouro Académico** (`#D97706`), com logotipo oficial e capas editoriais físicas (proporção 3:4 com relevo de lombada).
+- **Acervo Curricular Nacional:** 152+ obras didáticas abrangendo o Ensino Primário (1ª à 6ª classe), I Ciclo (7ª à 9ª classe), II Ciclo / Pré-Universitário (10ª à 12ª classe), Ensino Técnico (TLP, RCC, SEAC, SIBD), Cânone da Literatura Angolana e Línguas Nacionais (Kimbundu, Umbundu, Kikongo e Cokwe).
 
 ---
 
