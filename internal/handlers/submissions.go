@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -67,7 +68,7 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 	nivID, _ := strconv.ParseInt(r.FormValue("nivel_id"), 10, 64)
 
 	if nome == "" || classe == "" || titulo == "" {
-		http.Redirect(w, r, "/submeter?erro=1&msg=Por+favor+preencha+seu+nome,+classe+e+titulo+do+livro", http.StatusSeeOther)
+		responderSubmissaoErro(w, r, "Por favor preencha seu nome, classe e titulo do livro", http.StatusBadRequest)
 		return
 	}
 
@@ -84,12 +85,12 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 
 	if tipoEnvio == "link" {
 		if linkURL == "" {
-			http.Redirect(w, r, "/submeter?erro=1&msg=Informe+um+link+valido+para+o+livro", http.StatusSeeOther)
+			responderSubmissaoErro(w, r, "Informe um link valido para o livro", http.StatusBadRequest)
 			return
 		}
 		u, err := url.Parse(linkURL)
 		if err != nil || (u.Scheme != "http" && u.Scheme != "https") {
-			http.Redirect(w, r, "/submeter?erro=1&msg=Link+invalido.+Utilize+um+endereco+iniciado+por+https://", http.StatusSeeOther)
+			responderSubmissaoErro(w, r, "Link invalido. Utilize um endereco iniciado por https://", http.StatusBadRequest)
 			return
 		}
 		sub.LinkURL = linkURL
@@ -97,7 +98,7 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 		// Envio de arquivo físico (PDF ou DOCX)
 		file, header, err := r.FormFile("arquivo")
 		if err != nil {
-			http.Redirect(w, r, "/submeter?erro=1&msg=Selecione+um+arquivo+PDF+ou+DOCX+para+enviar", http.StatusSeeOther)
+			responderSubmissaoErro(w, r, "Selecione um arquivo PDF ou DOCX para enviar", http.StatusBadRequest)
 			return
 		}
 		defer file.Close()
@@ -114,7 +115,7 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 			strings.Contains(fileType, "zip") // docx é empacotado como zip
 
 		if !isPermitido {
-			http.Redirect(w, r, "/submeter?erro=1&msg=Formato+invalido.+Apenas+arquivos+PDF+e+DOCX+sao+aceitos", http.StatusSeeOther)
+			responderSubmissaoErro(w, r, "Formato invalido. Apenas arquivos PDF e DOCX sao aceitos", http.StatusBadRequest)
 			return
 		}
 
@@ -129,13 +130,13 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 
 		out, err := os.Create(destPath)
 		if err != nil {
-			http.Redirect(w, r, "/submeter?erro=1&msg=Falha+interna+ao+armazenar+arquivo", http.StatusSeeOther)
+			responderSubmissaoErro(w, r, "Falha interna ao armazenar arquivo", http.StatusInternalServerError)
 			return
 		}
 		defer out.Close()
 
 		if _, err := io.Copy(out, file); err != nil {
-			http.Redirect(w, r, "/submeter?erro=1&msg=Falha+ao+escrever+arquivo+no+disco", http.StatusSeeOther)
+			responderSubmissaoErro(w, r, "Falha ao escrever arquivo no disco", http.StatusInternalServerError)
 			return
 		}
 
@@ -145,7 +146,7 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 
 	id, err := h.db.InserirSubmissao(sub)
 	if err != nil {
-		http.Redirect(w, r, "/submeter?erro=1&msg=Falha+ao+registrar+submissao", http.StatusSeeOther)
+		responderSubmissaoErro(w, r, "Falha ao registrar submissao", http.StatusInternalServerError)
 		return
 	}
 
@@ -153,7 +154,44 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 	h.curator.NotificarNovaSubmissao()
 
 	msgSucesso := fmt.Sprintf("Submissão #%d enviada com sucesso! A Inteligência Artificial do Colégio Betânia avaliará o material em instantes.", id)
+	if isJSONRequest(r) {
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(map[string]any{
+			"status":   "ok",
+			"id":       id,
+			"mensagem": msgSucesso,
+		})
+		return
+	}
 	http.Redirect(w, r, "/submissoes?msg="+url.QueryEscape(msgSucesso), http.StatusSeeOther)
+}
+
+func isJSONRequest(r *http.Request) bool {
+	return strings.Contains(r.Header.Get("Accept"), "application/json") || r.URL.Query().Get("format") == "json"
+}
+
+func responderSubmissaoErro(w http.ResponseWriter, r *http.Request, msg string, statusCode int) {
+	if isJSONRequest(r) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(statusCode)
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": msg})
+		return
+	}
+	http.Redirect(w, r, "/submeter?erro=1&msg="+url.QueryEscape(msg), http.StatusSeeOther)
+}
+
+// HandleAPISubmissoes devolve as submissões recentes em formato JSON para o portal e agentes
+func (h *Handler) HandleAPISubmissoes(w http.ResponseWriter, r *http.Request) {
+	submissoes, err := h.db.ListarSubmissoesRecentes(50)
+	if err != nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		_ = json.NewEncoder(w).Encode(map[string]any{"error": "Erro ao listar submissões"})
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(submissoes)
 }
 
 // HandleSubmissoesStatus exibe o mural de submissões recentes e o parecer da IA

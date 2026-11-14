@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-AO">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BiblioTânia — Biblioteca Digital do Colégio Betânia</title>
+  <meta name="description" content="Plataforma Educacional Aberta do Colégio Betânia com manuais escolares certificados do MED/INIDE, cânone literário angolano e triagem autônoma por IA.">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Cabeçalho Institucional -->
+  <header class="site-header">
+    <div class="container header-wrapper">
+      <a href="./" class="brand-group">
+        <img src="images/logo.svg" alt="Colégio Betânia" class="brand-logo-img" width="46" height="46">
+        <div class="brand-info">
+          <h1>BiblioTânia</h1>
+          <p>Biblioteca Digital · Colégio Betânia</p>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="./" class="nav-link active">Catálogo</a>
+        <a href="#submeter" class="nav-link nav-btn-highlight" data-open-modal="submeter">Sugerir / Enviar Livro</a>
+        <a href="#mural" class="nav-link" data-open-modal="mural">Mural da IA</a>
+        <a href="#sobre" class="nav-link" data-open-modal="sobre">Sobre</a>
+        
+        <!-- Status de Conexão com o Backend Go na VPS -->
+        <div id="api-badge" class="api-badge offline" data-open-modal="api-config" title="Clique para verificar ou alterar a URL do servidor VPS">
+          <span class="api-status-dot"></span>
+          <span id="api-badge-text">VPS Standby</span>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="container" style="padding-top: 2rem; padding-bottom: 4rem;">
+    
+    <!-- Hero / Barra de Pesquisa Rápida -->
+    <section class="search-hero" style="margin-bottom: 2rem; text-align: center;">
+      <h2 style="font-size: 1.85rem; font-weight: 800; color: var(--brand-navy-900); margin-bottom: 0.5rem;">
+        Acervo Escolar & Literatura de Angola
+      </h2>
+      <p style="color: var(--text-muted); font-size: 1.05rem; margin-bottom: 1.5rem; max-width: 680px; margin-left: auto; margin-right: auto;">
+        Manuais curriculares da 1ª à 12ª Classe, literatura clássica e contemporânea angolana, línguas nacionais e cursos técnicos abertos para todos.
+      </p>
+
+      <div style="max-width: 720px; margin: 0 auto; position: relative;">
+        <div class="search-input-wrapper">
+          <input type="text" 
+                 id="search-input" 
+                 class="search-input" 
+                 placeholder="Pesquise por título, autor, disciplina ou palavra-chave (pressione / para focar)..." 
+                 autocomplete="off"
+                 aria-label="Pesquisar livros">
+          <button type="button" id="search-clear" class="search-clear-btn" title="Limpar pesquisa">&times;</button>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 0.75rem; padding: 0 0.25rem;">
+          <span id="results-count" style="font-size: 0.85rem; font-weight: 600; color: var(--brand-navy-700);">
+            Carregando catálogo...
+          </span>
+          <span style="font-size: 0.8rem; color: var(--text-subtle);">
+            Proporção Editorial Física 3:4 · SQLite FTS5
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Filtros por Classe Escolar (1ª à 12ª Classe) -->
+    <section class="curriculum-filter-section" style="margin-bottom: 1.25rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--brand-navy-800);">
+          Filtro por Classe Curricular (MED / INIDE)
+        </span>
+      </div>
+      <div id="class-filter-pills" class="class-pills-scroll">
+        <button type="button" class="class-pill-btn active" data-classe="0">Todas as Classes</button>
+        <button type="button" class="class-pill-btn" data-classe="1">1ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="2">2ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="3">3ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="4">4ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="5">5ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="6">6ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="7">7ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="8">8ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="9">9ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="10">10ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="11">11ª Classe</button>
+        <button type="button" class="class-pill-btn" data-classe="12">12ª Classe</button>
+      </div>
+    </section>
+
+    <!-- Filtros por Categoria Temática -->
+    <section class="category-filter-section" style="margin-bottom: 2rem;">
+      <div id="category-filter-pills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <button type="button" class="subject-pill-btn active" data-cat="todas">Todos os Temas</button>
+        <button type="button" class="subject-pill-btn" data-cat="literatura">📖 Literatura Angolana</button>
+        <button type="button" class="subject-pill-btn" data-cat="linguas">🇦🇴 Línguas Nacionais</button>
+        <button type="button" class="subject-pill-btn" data-cat="tecnico">💻 Técnico & Informática</button>
+        <button type="button" class="subject-pill-btn" data-cat="saude_agro">🌱 Saúde & Agropecuária</button>
+      </div>
+    </section>
+
+    <!-- Grade do Catálogo de Livros -->
+    <section id="catalog-grid" class="books-grid">
+      <!-- Inserido dinamicamente via app.js -->
+    </section>
+
+    <!-- Paginação -->
+    <nav id="pagination-container" aria-label="Paginação do catálogo">
+      <!-- Inserido dinamicamente via app.js -->
+    </nav>
+
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="site-footer">
+    <div class="container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <p style="font-weight: 700; color: #ffffff; margin-bottom: 0.2rem;">
+          © 2026 Colégio Betânia · BiblioTânia
+        </p>
+        <p style="font-size: 0.85rem; color: #94a3b8;">
+          Plataforma de Acesso Aberto e Gratuito à Educação de Excelência em Angola.
+        </p>
+      </div>
+      <div style="font-size: 0.85rem; color: #cbd5e1; display: flex; gap: 1.25rem;">
+        <a href="https://github.com/MisterAntoY/biblioteca-betania" target="_blank" rel="noopener noreferrer" style="color: #f59e0b;">
+          Código no GitHub
+        </a>
+        <a href="#sobre" data-open-modal="sobre" style="color: #cbd5e1;">
+          Manifesto Pedagógico
+        </a>
+        <a href="#api-config" data-open-modal="api-config" style="color: #cbd5e1;">
+          Status da VPS
+        </a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Modal Container & Backdrop -->
+  <div id="modal-backdrop" class="modal-backdrop" role="dialog" aria-modal="true">
+    <div id="modal-container"></div>
+  </div>
+
+  <!-- Container de Toasts -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- Script Principal SPA -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>

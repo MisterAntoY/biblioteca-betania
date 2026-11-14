@@ -1,0 +1,115 @@
+{
+  "total_livros": 155,
+  "disciplinas": [
+    {
+      "nome": "Língua Portuguesa & Literatura",
+      "total": 66
+    },
+    {
+      "nome": "Matemática & Geometria",
+      "total": 12
+    },
+    {
+      "nome": "História de Angola & Universal",
+      "total": 11
+    },
+    {
+      "nome": "Biologia & Geologia",
+      "total": 9
+    },
+    {
+      "nome": "Informática & Tecnologias",
+      "total": 7
+    },
+    {
+      "nome": "Química",
+      "total": 6
+    },
+    {
+      "nome": "Línguas Nacionais de Angola (Kimbundu, Umbundu, Kikongo, Cokwe)",
+      "total": 6
+    },
+    {
+      "nome": "Geografia de Angola & África",
+      "total": 6
+    },
+    {
+      "nome": "Física & Ciências Físicas",
+      "total": 6
+    },
+    {
+      "nome": "Economia & Noções de Direito",
+      "total": 6
+    },
+    {
+      "nome": "Filosofia & Ética Cívica",
+      "total": 5
+    },
+    {
+      "nome": "Agropecuária & Meio Ambiente Angolano",
+      "total": 5
+    },
+    {
+      "nome": "Estudo do Meio & Ciências Naturais",
+      "total": 4
+    },
+    {
+      "nome": "Saúde Comunitária & Primeiros Socorros",
+      "total": 3
+    },
+    {
+      "nome": "Línguas Estrangeiras (Inglês / Francês)",
+      "total": 3
+    }
+  ],
+  "classes": [
+    {
+      "classe": 1,
+      "total": 3
+    },
+    {
+      "classe": 2,
+      "total": 3
+    },
+    {
+      "classe": 3,
+      "total": 3
+    },
+    {
+      "classe": 4,
+      "total": 4
+    },
+    {
+      "classe": 5,
+      "total": 6
+    },
+    {
+      "classe": 6,
+      "total": 6
+    },
+    {
+      "classe": 7,
+      "total": 8
+    },
+    {
+      "classe": 8,
+      "total": 8
+    },
+    {
+      "classe": 9,
+      "total": 8
+    },
+    {
+      "classe": 10,
+      "total": 11
+    },
+    {
+      "classe": 11,
+      "total": 10
+    },
+    {
+      "classe": 12,
+      "total": 9
+    }
+  ]
+}

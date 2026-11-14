@@ -63,7 +63,13 @@ func main() {
 	mux.HandleFunc("/sobre", h.HandleSobre)
 
 	// Endpoints de API e Ação
-	mux.HandleFunc("/api/submissoes", h.HandleProcessarSubmissao)
+	mux.HandleFunc("/api/submissoes", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method == http.MethodGet {
+			h.HandleAPISubmissoes(w, r)
+			return
+		}
+		h.HandleProcessarSubmissao(w, r)
+	})
 	mux.HandleFunc("/api/livros", h.HandleAPILivros)
 	mux.HandleFunc("/api/stats", h.HandleAPIStats)
 
