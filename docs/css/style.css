@@ -1,5 +1,5 @@
 /* ==========================================================================
-   BiblioTânia — Complexo Escolar Privado Betânia (Zango 3, Luanda)
+   BiblioTânia — Complexo Escolar Privado Betânia (Zango 1, Luanda)
    Identidade Oficial: Azul Betânia (#0094DA) & Azul Noturno (#0B1E3B)
    Tipografia Editorial Impeccable (Zero AI Slop) · WCAG AAA
    ========================================================================== */
@@ -10,8 +10,8 @@
   --font-serif: 'Newsreader', Charter, 'Bitstream Charter', 'Times New Roman', Georgia, serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
 
-  /* Cores Oficiais Complexo Escolar Privado Betânia - Zango 3 */
-  --brand-blue: #0094da;        /* Azul Oficial Betânia Zango 3 */
+  /* Cores Oficiais Complexo Escolar Privado Betânia - Zango 1 */
+  --brand-blue: #0094da;        /* Azul Oficial Betânia Zango 1 */
   --brand-blue-hover: #0077b6;
   --brand-blue-light: #f0f9ff;
   --brand-blue-border: #bae6fd;
