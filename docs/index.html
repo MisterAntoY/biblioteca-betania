@@ -72,38 +72,60 @@
       </div>
     </section>
 
-    <!-- Filtros por Classe Escolar (1ª à 12ª Classe) -->
-    <section class="curriculum-filter-section" style="margin-bottom: 1.25rem;">
-      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-        <span style="font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--brand-navy-800);">
-          Filtro por Classe Curricular (MED / INIDE)
-        </span>
+    <!-- Seletor Curricular Agrupado por Ciclos de Angola (MED / INIDE) -->
+    <section class="class-selector-card" style="margin-bottom: 1.5rem;">
+      <div class="class-selector-header">
+        <span class="class-selector-icon" aria-hidden="true">🎒</span>
+        <div>
+          <h3 class="class-selector-title">Selecione a sua Classe Escolar</h3>
+          <p class="class-selector-desc">Manuais didáticos e acervo curricular oficial de Angola (MED / INIDE)</p>
+        </div>
       </div>
-      <div id="class-filter-pills" class="class-pills-scroll">
-        <button type="button" class="class-pill-btn active" data-classe="0">Todas as Classes</button>
-        <button type="button" class="class-pill-btn" data-classe="1">1ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="2">2ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="3">3ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="4">4ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="5">5ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="6">6ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="7">7ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="8">8ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="9">9ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="10">10ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="11">11ª Classe</button>
-        <button type="button" class="class-pill-btn" data-classe="12">12ª Classe</button>
+      
+      <div id="class-filter-pills" class="class-groups-container">
+        <button type="button" class="class-btn active" data-classe="0" title="Exibir acervo completo de todas as classes">
+          Todas as Classes
+        </button>
+
+        <div class="class-group">
+          <span class="class-group-label">Primário:</span>
+          <button type="button" class="class-btn" data-classe="1" title="1ª Classe">1ª</button>
+          <button type="button" class="class-btn" data-classe="2" title="2ª Classe">2ª</button>
+          <button type="button" class="class-btn" data-classe="3" title="3ª Classe">3ª</button>
+          <button type="button" class="class-btn" data-classe="4" title="4ª Classe">4ª</button>
+          <button type="button" class="class-btn" data-classe="5" title="5ª Classe">5ª</button>
+          <button type="button" class="class-btn" data-classe="6" title="6ª Classe">6ª</button>
+        </div>
+
+        <div class="class-group">
+          <span class="class-group-label">Iº Ciclo:</span>
+          <button type="button" class="class-btn" data-classe="7" title="7ª Classe">7ª</button>
+          <button type="button" class="class-btn" data-classe="8" title="8ª Classe">8ª</button>
+          <button type="button" class="class-btn" data-classe="9" title="9ª Classe">9ª</button>
+        </div>
+
+        <div class="class-group">
+          <span class="class-group-label">IIº Ciclo / Médio:</span>
+          <button type="button" class="class-btn" data-classe="10" title="10ª Classe">10ª</button>
+          <button type="button" class="class-btn" data-classe="11" title="11ª Classe">11ª</button>
+          <button type="button" class="class-btn" data-classe="12" title="12ª Classe">12ª</button>
+        </div>
       </div>
     </section>
 
-    <!-- Filtros por Categoria Temática -->
+    <!-- Filtros por Categoria Temática & Literatura -->
     <section class="category-filter-section" style="margin-bottom: 2rem;">
-      <div id="category-filter-pills" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <button type="button" class="subject-pill-btn active" data-cat="todas">Todos os Temas</button>
-        <button type="button" class="subject-pill-btn" data-cat="literatura">📖 Literatura Angolana</button>
-        <button type="button" class="subject-pill-btn" data-cat="linguas">🇦🇴 Línguas Nacionais</button>
-        <button type="button" class="subject-pill-btn" data-cat="tecnico">💻 Técnico & Informática</button>
-        <button type="button" class="subject-pill-btn" data-cat="saude_agro">🌱 Saúde & Agropecuária</button>
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.65rem;">
+        <span style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--brand-navy-800);">
+          Eixos Temáticos & Acervo Literário
+        </span>
+      </div>
+      <div id="category-filter-pills" class="disciplines-pills-bar" style="margin-bottom: 0; padding: 0.35rem 0;">
+        <button type="button" class="pill-item active" data-cat="todas">🌟 Todos os Temas</button>
+        <button type="button" class="pill-item" data-cat="literatura">📖 Literatura Angolana</button>
+        <button type="button" class="pill-item" data-cat="linguas">🗣️ Línguas Nacionais</button>
+        <button type="button" class="pill-item" data-cat="tecnico">💻 Técnico & Informática</button>
+        <button type="button" class="pill-item" data-cat="saude_agro">🌱 Saúde & Agropecuária</button>
       </div>
     </section>
 

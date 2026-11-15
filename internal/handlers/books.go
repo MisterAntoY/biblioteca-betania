@@ -157,7 +157,14 @@ func (h *Handler) HandleLerLivro(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "application/pdf")
-		w.Header().Set("Content-Disposition", "inline; filename=\""+livro.Titulo+".pdf\"")
+		safeTitle := strings.ReplaceAll(livro.Titulo, "\"", "'")
+		safeTitle = strings.ReplaceAll(safeTitle, "\r", "")
+		safeTitle = strings.ReplaceAll(safeTitle, "\n", " ")
+		safeTitle = strings.TrimSpace(safeTitle)
+		if safeTitle == "" {
+			safeTitle = "documento"
+		}
+		w.Header().Set("Content-Disposition", "inline; filename=\""+safeTitle+".pdf\"")
 		http.ServeFile(w, r, safePath)
 		return
 	}

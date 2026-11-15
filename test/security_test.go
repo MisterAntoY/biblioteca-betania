@@ -262,3 +262,65 @@ func TestCatalogSearchAndPagination(t *testing.T) {
 		t.Fatalf("livro incorreto retornado: %s", livros[0].Titulo)
 	}
 }
+
+// -------------------------------------------------------------
+// 6. Testes de Sanitização de Headers HTTP (Content-Disposition)
+// -------------------------------------------------------------
+func TestContentDispositionHeaderSanitization(t *testing.T) {
+	db, cleanup := setupTestDB(t)
+	defer cleanup()
+
+	tmpDir, err := os.MkdirTemp("", "bibliotania_uploads_*")
+	if err != nil {
+		t.Fatalf("falha ao criar temp upload dir: %v", err)
+	}
+	defer os.RemoveAll(tmpDir)
+
+	testPdfPath := filepath.Join(tmpDir, "livro_teste.pdf")
+	if err := os.WriteFile(testPdfPath, []byte("%PDF-1.4 mock content"), 0644); err != nil {
+		t.Fatalf("falha ao criar mock pdf: %v", err)
+	}
+
+	cfg := &config.Config{UploadDir: tmpDir}
+	evaluator := curator.NewEvaluator(cfg)
+	worker := curator.NewWorker(db, evaluator)
+	tmpl, err := web.CarregarTemplates()
+	if err != nil {
+		t.Fatalf("erro ao carregar templates: %v", err)
+	}
+	h := handlers.NewHandler(cfg, db, worker, tmpl)
+
+	// Livro com aspas duplas e injeções no título
+	livroMalicioso := &models.Livro{
+		Titulo:     "Manual \"Química Moderna\"\r\nInjeção Header",
+		Autor:      "Autor Teste",
+		Status:     "ativo",
+		ArquivoURL: "/uploads/livro_teste.pdf",
+	}
+	id, err := db.InserirLivro(livroMalicioso)
+	if err != nil {
+		t.Fatalf("falha ao inserir livro de teste: %v", err)
+	}
+
+	req := httptest.NewRequest("GET", fmt.Sprintf("/ler/%d", id), nil)
+	w := httptest.NewRecorder()
+	h.HandleLerLivro(w, req)
+
+	resp := w.Result()
+	defer resp.Body.Close()
+
+	if resp.StatusCode != 200 {
+		t.Fatalf("esperava status 200 ao servir arquivo existente, recebido: %d", resp.StatusCode)
+	}
+
+	disposition := resp.Header.Get("Content-Disposition")
+	// Não deve conter aspas não escapadas ou quebras de linha dentro do nome do arquivo
+	if strings.Contains(disposition, `""`) || strings.Contains(disposition, "\r") || strings.Contains(disposition, "\n") {
+		t.Fatalf("FALHA: Content-Disposition mal formatado ou suscetível a header splitting: %s", disposition)
+	}
+	// Deve conter aspas simples sanitizadas
+	if !strings.Contains(disposition, "Manual 'Química Moderna'") {
+		t.Fatalf("esperava aspas simples sanitizadas no header, recebido: %s", disposition)
+	}
+	t.Logf("✓ Content-Disposition sanitizado com sucesso: %s", disposition)
+}

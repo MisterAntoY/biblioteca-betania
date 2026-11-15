@@ -221,18 +221,16 @@
             <p class="book-card-author">
               ${escapeHtml(book.autor || 'Autor Desconhecido')}
             </p>
-            <div class="book-card-actions" style="margin-top: auto; display: flex; gap: 0.5rem; padding-top: 0.75rem;">
+            <div class="book-card-actions">
               <a href="${escapeHtml(readUrl)}" 
                  target="_blank" 
                  rel="noopener noreferrer" 
-                 class="btn-read" 
-                 style="flex: 1; text-align: center; font-size: 0.85rem; padding: 0.45rem 0.6rem; border-radius: 6px; background: #0b1e3b; color: white; font-weight: 600; text-decoration: none;">
-                Ler Obra
+                 class="btn-read">
+                📖 Ler Obra
               </a>
               <button type="button" 
                       class="btn-details" 
-                      data-id="${book.id}"
-                      style="background: #f1f5f9; border: 1px solid #cbd5e1; color: #334155; padding: 0.45rem 0.6rem; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;">
+                      data-id="${book.id}">
                 ℹ Detalhes
               </button>
             </div>
@@ -255,24 +253,22 @@
     }
 
     let pHtml = `
-      <div class="pagination" style="display: flex; justify-content: center; gap: 0.4rem; padding: 2rem 0;">
-        <button class="pag-btn" ${state.currentPage === 1 ? 'disabled style="opacity:0.5;"' : ''} data-page="${state.currentPage - 1}">« Anterior</button>
+      <div class="pagination">
+        <button class="pag-btn" ${state.currentPage === 1 ? 'disabled' : ''} data-page="${state.currentPage - 1}">« Anterior</button>
     `;
 
     for (let p = 1; p <= totalPages; p++) {
       if (totalPages > 8 && Math.abs(p - state.currentPage) > 2 && p !== 1 && p !== totalPages) {
-        if (p === 2 || p === totalPages - 1) pHtml += `<span style="padding:0.4rem;">...</span>`;
+        if (p === 2 || p === totalPages - 1) pHtml += `<span class="pag-ellipsis">...</span>`;
         continue;
       }
       pHtml += `
-        <button class="pag-btn ${p === state.currentPage ? 'active' : ''}" 
-                style="${p === state.currentPage ? 'background:#0b1e3b; color:white; font-weight:bold;' : 'background:white; border:1px solid #cbd5e1;'}"
-                data-page="${p}">${p}</button>
+        <button class="pag-btn ${p === state.currentPage ? 'active' : ''}" data-page="${p}">${p}</button>
       `;
     }
 
     pHtml += `
-        <button class="pag-btn" ${state.currentPage === totalPages ? 'disabled style="opacity:0.5;"' : ''} data-page="${state.currentPage + 1}">Próxima »</button>
+        <button class="pag-btn" ${state.currentPage === totalPages ? 'disabled' : ''} data-page="${state.currentPage + 1}">Próxima »</button>
       </div>
     `;
 
@@ -370,12 +366,19 @@
       });
     });
 
-    // Fechar modal ao clicar fora
+    // Fechar modal ao clicar fora ou em botões fechar/cancelar
     if (dom.modalBackdrop) {
       dom.modalBackdrop.addEventListener('click', (e) => {
-        if (e.target === dom.modalBackdrop) closeModal();
+        if (e.target === dom.modalBackdrop || e.target.closest('[data-action="close-modal"]')) {
+          closeModal();
+        }
       });
     }
+
+    // Fechar modal com tecla ESC
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeModal();
+    });
   }
 
   // Modais
@@ -386,7 +389,7 @@
       <div class="modal-card">
         <div class="modal-header">
           <h3 class="modal-title">${escapeHtml(title)}</h3>
-          <button type="button" class="modal-close-btn" onclick="window.BiblioTania.closeModal()">&times;</button>
+          <button type="button" class="modal-close-btn" data-action="close-modal" aria-label="Fechar modal">&times;</button>
         </div>
         <div class="modal-body">
           ${bodyHtml}
@@ -437,7 +440,7 @@
     `;
 
     const footerHtml = `
-      <button type="button" class="btn" style="background:#e2e8f0; color:#334155; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer;" onclick="window.BiblioTania.closeModal()">Fechar</button>
+      <button type="button" class="btn" style="background:#e2e8f0; color:#334155; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer;" data-action="close-modal">Fechar</button>
       <a href="${escapeHtml(readUrl)}" target="_blank" rel="noopener noreferrer" class="btn" style="background:#0b1e3b; color:white; padding:0.5rem 1.25rem; border-radius:6px; text-decoration:none; font-weight:600;">📖 Abrir e Ler Obra</a>
     `;
 
@@ -484,10 +487,10 @@
           <label style="display:block; font-size:0.85rem; font-weight:600; margin-bottom:0.25rem; color:#1e293b;">Tipo de Envio</label>
           <div style="display:flex; gap:1.5rem; margin-top:0.25rem;">
             <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.9rem; cursor:pointer;">
-              <input type="radio" name="tipo_envio" value="link" checked onchange="document.getElementById('group-link').style.display='block'; document.getElementById('group-file').style.display='none';"> Hiperligação Pública (HTTPS)
+              <input type="radio" name="tipo_envio" value="link" checked> Hiperligação Pública (HTTPS)
             </label>
             <label style="display:flex; align-items:center; gap:0.4rem; font-size:0.9rem; cursor:pointer;">
-              <input type="radio" name="tipo_envio" value="arquivo" onchange="document.getElementById('group-link').style.display='none'; document.getElementById('group-file').style.display='block';"> Envio de Ficheiro (PDF/DOCX)
+              <input type="radio" name="tipo_envio" value="arquivo"> Envio de Ficheiro (PDF/DOCX)
             </label>
           </div>
         </div>
@@ -512,9 +515,20 @@
 
     openModal('Sugerir / Enviar Livro para a BiblioTânia', bodyHtml);
 
-    // Handler de Envio
+    // Configurar alternância de tipo de envio e submissão
     const form = document.getElementById('submission-form');
     if (form) {
+      const grpLink = document.getElementById('group-link');
+      const grpFile = document.getElementById('group-file');
+
+      form.querySelectorAll('input[name="tipo_envio"]').forEach(radio => {
+        radio.addEventListener('change', (e) => {
+          const isLink = e.target.value === 'link';
+          if (grpLink) grpLink.style.display = isLink ? 'block' : 'none';
+          if (grpFile) grpFile.style.display = isLink ? 'none' : 'block';
+        });
+      });
+
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const formData = new FormData(form);
@@ -654,7 +668,7 @@
         </div>
 
         <div style="display:flex; justify-content:flex-end; gap:0.5rem; margin-top:0.5rem;">
-          <button type="button" class="btn" style="background:#e2e8f0; color:#334155; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer;" onclick="window.BiblioTania.closeModal()">Cancelar</button>
+          <button type="button" class="btn" style="background:#e2e8f0; color:#334155; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer;" data-action="close-modal">Cancelar</button>
           <button type="submit" class="btn" style="background:#0b1e3b; color:white; border:none; padding:0.5rem 1.25rem; border-radius:6px; font-weight:700; cursor:pointer;">Salvar e Testar Conexão</button>
         </div>
       </form>
