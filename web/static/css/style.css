@@ -351,18 +351,21 @@ a:hover {
   font-size: 0.88rem;
   font-weight: 700;
   color: var(--brand-navy-900);
+  cursor: pointer;
+  font-family: inherit;
+  outline: none;
   transition: all 0.15s ease;
 }
 .class-btn:hover {
-  background: var(--brand-gold-light);
-  color: var(--brand-gold-600);
-  border-color: var(--brand-gold-border);
+  background: var(--brand-blue-light);
+  color: var(--brand-blue-hover);
+  border-color: var(--brand-blue-border);
   text-decoration: none;
 }
 .class-btn.active {
   background: var(--brand-navy-900);
   color: #ffffff;
-  border-color: var(--brand-gold-400);
+  border-color: var(--brand-blue);
   text-decoration: none;
   box-shadow: 0 2px 6px rgba(11, 30, 59, 0.25);
   position: relative;
@@ -374,7 +377,7 @@ a:hover {
   left: 20%;
   right: 20%;
   height: 2px;
-  background: var(--brand-gold-400);
+  background: var(--brand-blue);
   border-radius: 2px;
 }
 
@@ -402,12 +405,15 @@ a:hover {
   font-weight: 700;
   color: var(--brand-navy-800);
   white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  outline: none;
   transition: all 0.15s ease;
 }
 .pill-item:hover {
-  background: var(--brand-navy-light);
-  color: var(--brand-navy-900);
-  border-color: var(--brand-navy-border);
+  background: var(--brand-blue-light);
+  color: var(--brand-blue-hover);
+  border-color: var(--brand-blue-border);
   text-decoration: none;
 }
 .pill-item.active {
@@ -598,23 +604,58 @@ a:hover {
   border-top: 1px solid var(--border);
   padding-top: 1rem;
 }
+.book-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--border-light, #f1f5f9);
+}
 .btn-read {
+  flex: 1;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 0.45rem;
   background: var(--brand-navy-900);
   color: #ffffff;
-  padding: 0.55rem 1.15rem;
-  border-radius: 8px;
-  font-weight: 800;
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  font-weight: 700;
   font-size: 0.85rem;
+  text-decoration: none;
   transition: all 0.15s ease;
+  box-shadow: 0 1px 2px rgba(11, 30, 59, 0.1);
 }
 .btn-read:hover {
-  background: var(--brand-gold-500);
+  background: var(--brand-blue-hover);
   color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 148, 218, 0.25);
   text-decoration: none;
-  box-shadow: var(--shadow-gold);
+}
+.btn-details {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: var(--brand-navy-800);
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s ease;
+}
+.btn-details:hover {
+  background: var(--brand-blue-light);
+  border-color: var(--brand-blue);
+  color: var(--brand-blue-hover);
+  transform: translateY(-1px);
 }
 .book-metrics {
   font-size: 0.76rem;
@@ -625,6 +666,56 @@ a:hover {
 /* ==========================================================================
    Paginação
    ========================================================================== */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 2rem 0 3.5rem 0;
+  flex-wrap: wrap;
+}
+.pag-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 0.85rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  color: var(--brand-navy-900);
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.pag-btn:hover:not(:disabled) {
+  background: var(--brand-blue-light);
+  border-color: var(--brand-blue);
+  color: var(--brand-blue-hover);
+  transform: translateY(-1px);
+}
+.pag-btn.active {
+  background: var(--brand-navy-900);
+  color: #ffffff;
+  border-color: var(--brand-navy-900);
+  box-shadow: 0 2px 6px rgba(11, 30, 59, 0.25);
+}
+.pag-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  border-color: #e2e8f0;
+}
+.pag-ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.5rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
 .pagination-nav {
   display: flex;
   justify-content: center;
