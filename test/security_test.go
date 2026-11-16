@@ -3,6 +3,7 @@ package test
 import (
 	"context"
 	"fmt"
+	"net/http"
 	"net/http/httptest"
 	"os"
 	"path/filepath"
@@ -323,4 +324,62 @@ func TestContentDispositionHeaderSanitization(t *testing.T) {
 		t.Fatalf("esperava aspas simples sanitizadas no header, recebido: %s", disposition)
 	}
 	t.Logf("✓ Content-Disposition sanitizado com sucesso: %s", disposition)
+}
+
+// -------------------------------------------------------------
+// 7. Testes de Cabeçalhos de Segurança de Borda (Padrão Cloudflare) & Edge Cache
+// -------------------------------------------------------------
+func TestCloudflareEdgeSecurityHeadersAndCache(t *testing.T) {
+	mux := http.NewServeMux()
+	mux.Handle("/static/", http.StripPrefix("/static/", web.StaticFileServer()))
+	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte("pong"))
+	})
+
+	securedHandler := handlers.SecurityHeadersMiddleware(mux)
+
+	// 1. Validar cabeçalhos de segurança na resposta da API / Páginas
+	req := httptest.NewRequest("GET", "/ping", nil)
+	w := httptest.NewRecorder()
+	securedHandler.ServeHTTP(w, req)
+	resp := w.Result()
+	defer resp.Body.Close()
+
+	// HSTS
+	hsts := resp.Header.Get("Strict-Transport-Security")
+	if !strings.Contains(hsts, "max-age=31536000") || !strings.Contains(hsts, "includeSubDomains") {
+		t.Fatalf("Strict-Transport-Security incorreto ou ausente: %s", hsts)
+	}
+	t.Logf("✓ HSTS validado: %s", hsts)
+
+	// Permissions-Policy
+	permPolicy := resp.Header.Get("Permissions-Policy")
+	if !strings.Contains(permPolicy, "camera=()") || !strings.Contains(permPolicy, "microphone=()") {
+		t.Fatalf("Permissions-Policy incorreto ou ausente: %s", permPolicy)
+	}
+	t.Logf("✓ Permissions-Policy validado: %s", permPolicy)
+
+	// CSP sem 'unsafe-inline' em script-src
+	csp := resp.Header.Get("Content-Security-Policy")
+	if strings.Contains(csp, "script-src 'self' 'unsafe-inline'") {
+		t.Fatalf("FALHA: CSP contém 'unsafe-inline' em script-src: %s", csp)
+	}
+	if !strings.Contains(csp, "script-src 'self' https://misterantoy.github.io;") {
+		t.Fatalf("CSP não contém script-src estrito esperado: %s", csp)
+	}
+	t.Logf("✓ CSP Nível 3 Estrito validado: %s", csp)
+
+	// 2. Validar Cache-Control de Borda (Cloudflare Edge Caching) em assets estáticos
+	reqStatic := httptest.NewRequest("GET", "/static/css/style.css", nil)
+	wStatic := httptest.NewRecorder()
+	securedHandler.ServeHTTP(wStatic, reqStatic)
+	respStatic := wStatic.Result()
+	defer respStatic.Body.Close()
+
+	cacheControl := respStatic.Header.Get("Cache-Control")
+	if !strings.Contains(cacheControl, "public") || !strings.Contains(cacheControl, "max-age=86400") || !strings.Contains(cacheControl, "stale-while-revalidate") {
+		t.Fatalf("Cache-Control de borda ausente ou inválido no StaticFileServer: %s", cacheControl)
+	}
+	t.Logf("✓ Edge Cache-Control validado: %s", cacheControl)
 }

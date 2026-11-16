@@ -44,12 +44,20 @@ func CarregarTemplates() (*template.Template, error) {
 	return template.New("").Funcs(funcMap).ParseFS(TemplateFS, "templates/*.html")
 }
 
+// withEdgeCache injeta cabeçalhos de cache otimizados para CDN e proxies de borda
+func withEdgeCache(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Cache-Control", "public, max-age=86400, stale-while-revalidate=604800")
+		next.ServeHTTP(w, r)
+	})
+}
+
 // StaticFileServer devolve o handler para servir CSS, JS e imagens embutidas
 func StaticFileServer() http.Handler {
 	// Se a pasta física existir em disco, serve diretamente para suporte rápido a uploads e capas
 	for _, localDir := range []string{"web/static", "/home/rmendes/biblioteca-betania/web/static"} {
 		if fi, err := os.Stat(localDir); err == nil && fi.IsDir() {
-			return http.FileServer(http.Dir(localDir))
+			return withEdgeCache(http.FileServer(http.Dir(localDir)))
 		}
 	}
 
@@ -58,5 +66,5 @@ func StaticFileServer() http.Handler {
 	if err != nil {
 		panic(err)
 	}
-	return http.FileServer(http.FS(sub))
+	return withEdgeCache(http.FileServer(http.FS(sub)))
 }
