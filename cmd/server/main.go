@@ -18,9 +18,7 @@ import (
 )
 
 func main() {
-	log.Println("==================================================")
-	log.Println("  Iniciando BiblioTânia — Colégio Betânia")
-	log.Println("==================================================")
+	log.Println("[BiblioTânia] Iniciando servidor do Colégio Betânia")
 
 	// 1. Carregar Configurações
 	cfg := config.Load()

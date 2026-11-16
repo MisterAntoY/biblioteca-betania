@@ -507,13 +507,13 @@
 
         <div style="margin-top:0.5rem; text-align:right;">
           <button type="submit" class="btn" style="background:#0b1e3b; color:white; padding:0.65rem 1.5rem; border:none; border-radius:6px; font-weight:700; cursor:pointer;">
-            🤖 Submeter para Triagem da IA
+            Submeter para Avaliação
           </button>
         </div>
       </form>
     `;
 
-    openModal('Sugerir / Enviar Livro para a BiblioTânia', bodyHtml);
+    openModal('Sugerir Livro para o Acervo', bodyHtml);
 
     // Configurar alternância de tipo de envio e submissão
     const form = document.getElementById('submission-form');
@@ -535,7 +535,7 @@
         const submitBtn = form.querySelector('button[type="submit"]');
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.textContent = 'Enviando e Avaliando com IA...';
+          submitBtn.textContent = 'A enviar...';
         }
 
         try {
@@ -548,13 +548,13 @@
 
             const data = await resp.json();
             if (resp.ok) {
-              showToast('Submissão enviada com sucesso! A IA do Colégio Betânia avaliará o material.', 'success');
+              showToast('Submissão enviada com sucesso! A curadoria pedagógica avaliará a obra.', 'success');
               closeModal();
             } else {
               showToast(data.error || 'Erro ao processar submissão.', 'error');
             }
           } else {
-            // Simulação graciosa offline / registro no localStorage
+            // Registo no localStorage quando offline
             const localSubs = JSON.parse(localStorage.getItem('bibliotania_pending_subs') || '[]');
             localSubs.push({
               titulo: formData.get('titulo'),
@@ -565,16 +565,16 @@
             });
             localStorage.setItem('bibliotania_pending_subs', JSON.stringify(localSubs));
 
-            showToast('Sugestão registrada! Será sincronizada com o Curador de IA assim que a conexão estiver restabelecida.', 'success');
+            showToast('Sugestão registada localmente. Será sincronizada assim que a ligação for restabelecida.', 'success');
             closeModal();
           }
         } catch (err) {
           console.error(err);
-          showToast('Erro de comunicação. Verifique a URL da API da Cloud VPS.', 'error');
+          showToast('Erro de comunicação. Verifique a ligação com o servidor.', 'error');
         } finally {
           if (submitBtn) {
             submitBtn.disabled = false;
-            submitBtn.textContent = '🤖 Submeter para Triagem da IA';
+            submitBtn.textContent = 'Submeter para Avaliação';
           }
         }
       });
@@ -615,33 +615,32 @@
     if (!listHtml) {
       listHtml = `
         <div style="padding: 1.5rem; text-align: center; color: #64748b;">
-          <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🤖</div>
-          <h4 style="font-weight: 700; color: #0b1e3b; margin-bottom: 0.25rem;">Curador de IA em Monitorização Contínua</h4>
+          <h4 style="font-weight: 700; color: #0b1e3b; margin-bottom: 0.25rem;">Curadoria Pedagógica</h4>
           <p style="font-size: 0.9rem; line-height: 1.5;">
-            Todas as submissões enviadas por alunos e professores são avaliadas pelo modelo de Inteligência Artificial para verificar relevância pedagógica, conformidade curricular e segurança escolar antes de serem integradas ao acervo.
+            Todas as sugestões de livros e manuais são analisadas quanto ao valor educativo e adequação curricular antes de serem integradas ao acervo público.
           </p>
         </div>
       `;
     }
 
-    openModal('Mural de Triagem da IA — Colégio Betânia', listHtml);
+    openModal('Mural de Curadoria Pedagógica — Colégio Betânia', listHtml);
   }
 
   // Modal Sobre Institucional
   function openSobreModal() {
     const bodyHtml = `
       <div style="font-size: 0.95rem; line-height: 1.7; color: #334155;">
-        <h4 style="font-size: 1.15rem; font-weight: 800; color: #0b1e3b; margin-bottom: 0.5rem;">A Biblioteca Digital Oficial do Colégio Betânia</h4>
+        <h4 style="font-size: 1.15rem; font-weight: 800; color: #0b1e3b; margin-bottom: 0.5rem;">Biblioteca Digital do Colégio Betânia</h4>
         <p style="margin-bottom: 1rem;">
-          A <strong>BiblioTânia</strong> é a plataforma oficial de biblioteca digital do <strong>Colégio Betânia</strong>. Projetada sob o princípio da máxima simplicidade, alta velocidade e zero dependências pesadas, seu objetivo é democratizar o acesso ao conhecimento pedagógico de excelência para todos os alunos e docentes da instituição.
+          A <strong>BiblioTânia</strong> reúne manuais didáticos, literatura angolana e materiais de apoio curricular para alunos e professores do Colégio Betânia, acessíveis gratuitamente em qualquer dispositivo.
         </p>
 
-        <h5 style="font-weight: 700; color: #0b1e3b; margin-top: 1rem; margin-bottom: 0.4rem;">Pilares Fundamentais:</h5>
-        <ul style="padding-left: 1.25rem; margin-bottom: 1rem; color: #475569;">
-          <li><strong>Acervo Curricular de Angola:</strong> Manuais oficiais da 1ª à 12ª Classe certificados pelo MED/INIDE e literatura nacional clássica e contemporânea.</li>
-          <li><strong>Capas Físicas Editoriais (3:4):</strong> Design inspirado na sensação tátil de uma estante real com relevo de lombada.</li>
-          <li><strong>Curadoria por Inteligência Artificial:</strong> Avaliação automatizada de novas obras com foco em ética pedagógica e rigor curricular.</li>
-          <li><strong>Engenharia de Alto Desempenho em Go:</strong> Backend ultraleve operando em Cloud VPS com SQLite FTS5 e consumo de memória inferior a 25MB de RAM.</li>
+        <h5 style="font-weight: 700; color: #0b1e3b; margin-top: 1rem; margin-bottom: 0.4rem;">Princípios do Acervo:</h5>
+        <ul style="padding-left: 1.25rem; margin-bottom: 1rem; color: #475569; line-height: 1.6;">
+          <li><strong>Currículo Nacional de Angola:</strong> Manuais oficiais certificados pelo MED/INIDE da 1ª à 12ª Classe.</li>
+          <li><strong>Literatura Angolana e Universal:</strong> Clássicos nacionais, gramáticas de línguas nacionais e obras de referência.</li>
+          <li><strong>Curadoria Pedagógica:</strong> Avaliação de qualidade didática antes da inclusão de novas obras sugeridas pela comunidade escolar.</li>
+          <li><strong>Acesso Livre e Veloz:</strong> Carregamento rápido mesmo em redes móveis com baixo consumo de dados.</li>
         </ul>
       </div>
     `;

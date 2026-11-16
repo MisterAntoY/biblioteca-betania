@@ -30,7 +30,8 @@ func NewWorker(db *database.DB, evaluator *Evaluator) *Worker {
 // Start inicia o loop de processamento em segundo plano
 func (w *Worker) Start() {
 	go func() {
-		ticker := time.NewTicker(5 * time.Second)
+		// Ticker periódico como fallback de segurança; o disparo principal é reativo via notifyCh
+		ticker := time.NewTicker(60 * time.Second)
 		defer ticker.Stop()
 
 		for {

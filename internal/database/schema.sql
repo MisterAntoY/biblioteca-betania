@@ -1,5 +1,5 @@
--- Esquema de Banco de Dados de Alta Performance - BiblioTânia (Colégio Betânia)
--- Otimizado para SQLite com FTS5, concorrência WAL e escala até 100 Milhões
+-- Esquema de Banco de Dados - BiblioTânia (Colégio Betânia)
+-- Configurado para SQLite com busca textual FTS5 e modo WAL
 
 PRAGMA foreign_keys = ON;
 PRAGMA journal_mode = WAL;
@@ -84,7 +84,7 @@ CREATE TRIGGER IF NOT EXISTS trg_livros_au AFTER UPDATE ON livros BEGIN
     VALUES (new.id, new.titulo, new.autor, new.sinopse);
 END;
 
--- 5. Fila de Submissões de Estudantes (Triagem da IA)
+-- 5. Fila de Submissões de Estudantes e Curadoria Pedagógica
 CREATE TABLE IF NOT EXISTS submissoes_estudantes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     estudante_nome TEXT NOT NULL,

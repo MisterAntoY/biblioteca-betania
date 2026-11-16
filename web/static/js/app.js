@@ -32,4 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     });
   }
+
+  // 3. Submissão automática do seletor de nível de ensino sem eventos inline (CSP compliant)
+  const filtroNivel = document.getElementById('filtro-nivel');
+  if (filtroNivel && filtroNivel.form) {
+    filtroNivel.addEventListener('change', () => {
+      filtroNivel.form.submit();
+    });
+  }
 });

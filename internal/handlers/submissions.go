@@ -33,7 +33,7 @@ func (h *Handler) HandleSubmeterPagina(w http.ResponseWriter, r *http.Request) {
 	erro := r.URL.Query().Get("erro") == "1"
 
 	data := SubmeterPageData{
-		Titulo:      "Sugerir / Enviar Livro — BiblioTânia (Colégio Betânia)",
+		Titulo:      "Sugerir Livro — BiblioTânia (Colégio Betânia)",
 		Disciplinas: disciplinas,
 		Niveis:      niveis,
 		Mensagem:    msg,
@@ -41,7 +41,9 @@ func (h *Handler) HandleSubmeterPagina(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	_ = h.templates.ExecuteTemplate(w, "submeter.html", data)
+	if err := h.templates.ExecuteTemplate(w, "submeter.html", data); err != nil {
+		http.Error(w, "Erro ao renderizar formulário: "+err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // HandleProcessarSubmissao recebe o envio multipart/form-data do estudante
@@ -150,10 +152,10 @@ func (h *Handler) HandleProcessarSubmissao(w http.ResponseWriter, r *http.Reques
 		return
 	}
 
-	// Notificar o Worker assíncrono de IA para triagem imediata
+	// Notificar o Worker de curadoria para triagem imediata
 	h.curator.NotificarNovaSubmissao()
 
-	msgSucesso := fmt.Sprintf("Submissão #%d enviada com sucesso! A Inteligência Artificial do Colégio Betânia avaliará o material em instantes.", id)
+	msgSucesso := fmt.Sprintf("Submissão #%d enviada com sucesso! A curadoria pedagógica avaliará a obra.", id)
 	if isJSONRequest(r) {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]any{
@@ -203,13 +205,15 @@ func (h *Handler) HandleSubmissoesStatus(w http.ResponseWriter, r *http.Request)
 	}
 
 	data := map[string]any{
-		"Titulo":     "Mural de Triagem da IA — BiblioTânia",
+		"Titulo":     "Mural de Curadoria Pedagógica — BiblioTânia",
 		"Submissoes": submissoes,
 		"Mensagem":   r.URL.Query().Get("msg"),
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	_ = h.templates.ExecuteTemplate(w, "submissoes.html", data)
+	if err := h.templates.ExecuteTemplate(w, "submissoes.html", data); err != nil {
+		http.Error(w, "Erro ao renderizar mural: "+err.Error(), http.StatusInternalServerError)
+	}
 }
 
 // TokenHex helper para gerar hashes aleatórios

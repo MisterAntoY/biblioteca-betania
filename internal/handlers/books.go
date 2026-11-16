@@ -221,5 +221,7 @@ func (h *Handler) HandleSobre(w http.ResponseWriter, r *http.Request) {
 		"Stats":  stats,
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	_ = h.templates.ExecuteTemplate(w, "sobre.html", data)
+	if err := h.templates.ExecuteTemplate(w, "sobre.html", data); err != nil {
+		http.Error(w, "Erro ao renderizar página: "+err.Error(), http.StatusInternalServerError)
+	}
 }

@@ -174,10 +174,10 @@ func TestVisualizationFullE2E(t *testing.T) {
 		t.Fatalf("esperava 200 em /submissoes, recebido: %d", wMural.Code)
 	}
 	bodyMural := wMural.Body.String()
-	if !strings.Contains(bodyMural, "Mural de Triagem da Inteligência Artificial") {
-		t.Fatalf("título do mural da IA não renderizado")
+	if !strings.Contains(bodyMural, "Mural de Curadoria Pedagógica") {
+		t.Fatalf("título do mural de curadoria não renderizado")
 	}
-	t.Logf("✓ Mural visual da IA validado")
+	t.Logf("✓ Mural visual de curadoria validado")
 
 	// 7. Testar Visualização da Página Sobre (/sobre)
 	reqSobre := httptest.NewRequest("GET", "/sobre", nil)

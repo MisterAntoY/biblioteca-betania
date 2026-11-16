@@ -24,8 +24,8 @@
       </a>
       <nav class="nav-links">
         <a href="/" class="nav-link">Catálogo</a>
-        <a href="/submeter" class="nav-link nav-btn-highlight">Sugerir / Enviar Livro</a>
-        <a href="/submissoes" class="nav-link">Mural da IA</a>
+        <a href="/submeter" class="nav-link nav-btn-highlight">Sugerir Livro</a>
+        <a href="/submissoes" class="nav-link">Mural de Curadoria</a>
         <a href="/sobre" class="nav-link">Sobre</a>
       </nav>
     </div>
@@ -110,7 +110,7 @@
           {{ if .Classe }}<input type="hidden" name="classe" value="{{ .Classe }}">{{ end }}
           {{ if .DisciplinaID }}<input type="hidden" name="disciplina" value="{{ .DisciplinaID }}">{{ end }}
           <label for="filtro-nivel" style="font-size:0.85rem; font-weight:600; color:var(--text-muted);">Nível:</label>
-          <select id="filtro-nivel" name="nivel" onchange="this.form.submit()" style="padding:0.35rem 0.65rem; border-radius:6px; border:1px solid var(--border); font-size:0.85rem;">
+          <select id="filtro-nivel" name="nivel" style="padding:0.35rem 0.65rem; border-radius:6px; border:1px solid var(--border); font-size:0.85rem;">
             <option value="0">Todos os Ciclos</option>
             {{ range .Niveis }}
             <option value="{{ .ID }}" {{ if eq $.NivelID .ID }}selected{{ end }}>{{ .Nome }}</option>
